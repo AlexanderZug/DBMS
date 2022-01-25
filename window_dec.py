@@ -5,7 +5,7 @@ from tkinter import messagebox as mbox
 
 class Window(tk.Tk):
     def __init__(self):
-        super(Window, self).__init__()
+        super().__init__()
         self.title('SQL-worker')
         self.bold_font = 'Helvetica 13 bold'
         self.geometry('1300x700')
