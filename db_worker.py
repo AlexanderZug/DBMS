@@ -27,11 +27,3 @@ class DBWorker:
         self.__cur.execute("""SELECT * FROM concerts;""")
         return self.__cur.fetchall()
 
-
-DBWorker().tabels_header()
-# class SQLWorker:
-#     pass
-#
-#
-# class WindowWorker:
-#     pass
