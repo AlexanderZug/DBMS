@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mbox
+import webbrowser as wb
+from db_worker import DBWorker as db
 
 
 class Window(tk.Tk):
@@ -36,7 +38,7 @@ class Window(tk.Tk):
     def db_show(self):
         frame_sql_requests = tk.Frame(self, width=600, height=200, bg='white')
         frame_sql_requests.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
-        db_list = ['1', '2', '3', '4', '5']
+        db_list = db().get_all_tabels()
         ttk.Combobox(frame_sql_requests, values=db_list).place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
 
     def sql_requests(self):
@@ -61,14 +63,11 @@ class Window(tk.Tk):
         frame_db_content = tk.Frame(self, width=1000, height=250, bg='green')
         frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
         self.tabel_db_content = ttk.Treeview(frame_db_content, show='headings')
-        lst = [(2, 12, 2.09, 4, 6, 8), (3, 12, 2.09), (4, 12, 2.09),
-               (2, 12, 2.09, 4, 6, 8), (2, 12, 2.09, 4, 6, 8), (3, 12, 2.09), (4, 12, 2.09),
-               (2, 12, 2.09, 4, 6, 8), (2, 12, 2.09, 4, 6, 12), (2, 12, 2.09, 4, 6, 8), (3, 12, 2.09), (4, 12, 2.09),
-               (2, 12, 2.09, 4, 6, 8), (2, 12, 2.09, 4, 6, 12)]
-        heads = ['id', 'col_1', 'col_2', 'col_3', 'col_4', 'col_5', 'col_6']
+        lst = db().tabel_content_to_user()
+        heads = db().tabels_header()
         self.tabel_db_content['columns'] = heads
         for header in heads:
-            self.tabel_db_content.heading(header, text=header, anchor='center')
+            self.tabel_db_content.heading(header, text=header[1], anchor='center')
         for row in lst:
             self.tabel_db_content.insert('', tk.END, values=row)
         scroll_bd_content_y = ttk.Scrollbar(frame_db_content, command=self.tabel_db_content.yview)
@@ -81,7 +80,7 @@ class Window(tk.Tk):
         row = 0
         column = 0
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
-                       'ORDER BY', 'HAVING', 'DROP', 'INTO', 'DELETE', 'TABEL', 'FROM', 'JOIN']
+                        'ORDER BY', 'HAVING', 'DROP', 'INTO', 'DELETE', 'TABEL', 'FROM', 'JOIN']
         for comm_name in commands_lst:
             tk.Button(frame_sql_commands, text=comm_name,
                       borderwidth=2).grid(row=row, column=column, padx=0, pady=0)
@@ -96,7 +95,9 @@ class Window(tk.Tk):
                                                                           relheight=0.08)
             relx += 0.08
         tk.Button(frame_sql_commands, text='Справочник SQL-запросов',
-                  borderwidth=2).place(relx=0.16, rely=0.45, relwidth=0.7, relheight=0.2)
+                  borderwidth=2,
+                  command=lambda: wb.open('https://unetway.com/tutorials/sql')).place(relx=0.16, rely=0.45,
+                                                                                      relwidth=0.7, relheight=0.2)
         tk.Button(frame_sql_commands, text='Подключение к Python',
                   borderwidth=2).place(relx=0.16, rely=0.67, relwidth=0.7, relheight=0.2)
 
@@ -118,9 +119,10 @@ class Window(tk.Tk):
             self.destroy()
 
     def pop_up_bd_not_conn(self):
-        anser = mbox.askretrycancel('','Что-то пошло не так...')
-        if anser is False: ###cancel == False; retry == True
+        anser = mbox.askretrycancel('', 'Что-то пошло не так...')
+        if anser is False:  ###cancel == False; retry == True
             pass
+
 
 
 window = Window()
