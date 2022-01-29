@@ -81,33 +81,39 @@ class Window(tk.Tk):
     def sql_commands(self):
         frame_sql_commands = tk.Frame(self, width=280, height=250)
         frame_sql_commands.place(relx=0.72, rely=0.07, relwidth=0.28, relheight=0.5)
+        buts = []
         row = 0
         column = 0
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
                         'ORDER BY', 'HAVING', 'DROP', 'INTO', 'DELETE', 'TABEL', 'FROM', 'JOIN']
         for comm_name in commands_lst:
-            tk.Button(frame_sql_commands,
-                      text=comm_name,
-                      borderwidth=2,
-                      command=lambda: self.txt_sql_req.insert(1.0, commands_lst[1])).grid(row=row, column=column,
-                                                                                          padx=0, pady=0)
+            buts.append(tk.Button(frame_sql_commands, borderwidth=2,))
+            buts[-1].grid(row=row, column=column, padx=0, pady=0)
             column += 1
+            buts[-1]['text'] = comm_name
             if column == 4:
                 row += 1
                 column = 0
+            for i in range(len(buts)):
+                buts[i]['command'] = lambda i=i: \
+                    self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(6, " ").ljust(6, " "))
+        buts_symb = []
         symbols_lst = ['*', ';', "''"]
         relx = 0.74
         for symb in symbols_lst:
-            symb_but = tk.Button(frame_sql_commands, text=symb, borderwidth=3,
-                                 command=lambda: self.txt_sql_req.insert(1.0, symbols_lst[1]))
-            symb_but.place(relx=relx, rely=0.24, relwidth=0.08, relheight=0.08)
+            buts_symb.append(tk.Button(frame_sql_commands, text=symb, borderwidth=3))
+            buts_symb[-1].place(relx=relx, rely=0.24, relwidth=0.08, relheight=0.08)
             relx += 0.08
+            buts_symb[-1]['text'] = symb
+            for i in range(len(buts_symb)):
+                buts_symb[i]['command'] = lambda i=i: \
+                    self.txt_sql_req.insert(tk.END, symbols_lst[i].rjust(3, " ").ljust(3, " "))
         tk.Button(frame_sql_commands, text='Справочник SQL-запросов',
                   borderwidth=2,
-                  command=lambda: wb.open('https://unetway.com/tutorials/sql')).place(relx=0.16, rely=0.45,
+                  command=lambda: wb.open('https://unetway.com/tutorials/sql')).place(relx=0.16, rely=0.67,
                                                                                       relwidth=0.7, relheight=0.2)
-        tk.Button(frame_sql_commands, text='Подключение к Python',
-                  borderwidth=2).place(relx=0.16, rely=0.67, relwidth=0.7, relheight=0.2)
+        tk.Button(frame_sql_commands, text='Шаблон таблицы',
+                  borderwidth=2).place(relx=0.16, rely=0.45, relwidth=0.7, relheight=0.2)
 
     def close_save_but(self):
         frame_close_save_but = tk.Frame(self, width=1000, height=20)
