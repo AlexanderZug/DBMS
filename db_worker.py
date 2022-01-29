@@ -23,7 +23,10 @@ class DBWorker:
     def get_sql_requests(self, query: list):
         pass
 
-    def tabel_content_to_user(self):
-        self.__cur.execute("""SELECT * FROM concerts;""")
-        return self.__cur.fetchall()
-
+    def tabel_content_to_user(self, tabel):
+        try:
+            self.__cur.execute("""SELECT * FROM '%s'""" % tabel)
+        except Exception:
+            return []
+        else:
+            self.__cur.fetchall()

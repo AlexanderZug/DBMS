@@ -39,11 +39,12 @@ class Window(tk.Tk):
         frame_sql_requests = tk.Frame(self, width=600, height=200, bg='white')
         frame_sql_requests.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
         db_list = db().get_all_tabels()
-        ttk.Combobox(frame_sql_requests, values=db_list).place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
+        self.db_tables = ttk.Combobox(frame_sql_requests, values=db_list)
+        self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
 
     def sql_requests(self):
-        frame_sql_requests = tk.Frame(self, width=400, height=250, bg='blue')
-        frame_sql_requests.place(relx=0.2, rely=0.07, relwidth=0.7, relheight=0.5)
+        frame_sql_requests = tk.Frame(self, width=200, height=250, bg='blue')
+        frame_sql_requests.place(relx=0.2, rely=0.07, relwidth=0.52, relheight=0.5)
         self.txt_sql_req = tk.Text(frame_sql_requests, width=700, height=253, bg='white', fg='black')
         self.txt_sql_req.place(relx=0, rely=0, relwidth=1, relheight=1)
 
@@ -51,7 +52,7 @@ class Window(tk.Tk):
         frame_sql_inter_del_but = tk.Frame(self, width=1000, height=10)
         frame_sql_inter_del_but.place(relx=0, rely=0.5, relwidth=1, relheight=0.07)
         tk.Button(frame_sql_inter_del_but, text='Подключение к БД', fg='black', bg='white',
-                  borderwidth=10, command=self.pop_up_bd_not_conn).place(relx=0.03, rely=0.01)
+                  borderwidth=10, command=lambda: db().tabel_content_to_user(self.db_tables.get())).place(relx=0.03, rely=0.01)
         tk.Button(frame_sql_inter_del_but, text='Очищение...',
                   fg='black', bg='white', borderwidth=10,
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
@@ -63,13 +64,16 @@ class Window(tk.Tk):
         frame_db_content = tk.Frame(self, width=1000, height=250, bg='green')
         frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
         self.tabel_db_content = ttk.Treeview(frame_db_content, show='headings')
-        lst = db().tabel_content_to_user()
-        heads = db().tabels_header()
-        self.tabel_db_content['columns'] = heads
-        for header in heads:
-            self.tabel_db_content.heading(header, text=header[1], anchor='center')
-        for row in lst:
-            self.tabel_db_content.insert('', tk.END, values=row)
+        lst = db().tabel_content_to_user(self.db_tables.get())
+        if lst:
+            heads = db().tabels_header()
+            self.tabel_db_content['columns'] = heads
+            for header in heads:
+                self.tabel_db_content.heading(header, text=header[1], anchor='center')
+            for row in lst:
+                self.tabel_db_content.insert('', tk.END, values=row)
+        else:
+            db().tabel_content_to_user(self.db_tables.get())
         scroll_bd_content_y = ttk.Scrollbar(frame_db_content, command=self.tabel_db_content.yview)
         self.tabel_db_content.configure(yscrollcommand=scroll_bd_content_y.set)
         scroll_bd_content_y.pack(side=tk.RIGHT, fill=tk.Y)
@@ -82,8 +86,11 @@ class Window(tk.Tk):
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
                         'ORDER BY', 'HAVING', 'DROP', 'INTO', 'DELETE', 'TABEL', 'FROM', 'JOIN']
         for comm_name in commands_lst:
-            tk.Button(frame_sql_commands, text=comm_name,
-                      borderwidth=2).grid(row=row, column=column, padx=0, pady=0)
+            tk.Button(frame_sql_commands,
+                      text=comm_name,
+                      borderwidth=2,
+                      command=lambda: self.txt_sql_req.insert(1.0, commands_lst[1])).grid(row=row, column=column,
+                                                                                          padx=0, pady=0)
             column += 1
             if column == 4:
                 row += 1
@@ -91,8 +98,9 @@ class Window(tk.Tk):
         symbols_lst = ['*', ';', "''"]
         relx = 0.74
         for symb in symbols_lst:
-            tk.Button(frame_sql_commands, text=symb, borderwidth=3).place(relx=relx, rely=0.24, relwidth=0.08,
-                                                                          relheight=0.08)
+            symb_but = tk.Button(frame_sql_commands, text=symb, borderwidth=3,
+                                 command=lambda: self.txt_sql_req.insert(1.0, symbols_lst[1]))
+            symb_but.place(relx=relx, rely=0.24, relwidth=0.08, relheight=0.08)
             relx += 0.08
         tk.Button(frame_sql_commands, text='Справочник SQL-запросов',
                   borderwidth=2,
