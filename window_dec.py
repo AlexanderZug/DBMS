@@ -13,23 +13,13 @@ class Window(tk.Tk):
         self.geometry('1300x700')
         self.resizable(False, False)
         self.frames()
-        self.widgest()
-
-    def widgest(self):
-        self.db_sql_label()
-        self.db_show()
-        self.sql_requests()
-        self.sql_inter_del_but()
-        self.table_for_db_cont()
-        self.sql_commands()
-        self.sql_symbol()
-        self.close_save_but()
+        self.widgets()
 
     def frames(self):
         self.frame_db_sql_label = tk.Frame(self, width=1000, height=20)
         self.frame_db_sql_label.place(relx=0, rely=0, relwidth=1, relheight=0.07)
-        self.frame_sql_requests = tk.Frame(self, width=600, height=200, bg='white')
-        self.frame_sql_requests.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
+        self.frame_leble_show = tk.Frame(self, width=100, height=100, bg='white')
+        self.frame_leble_show.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
         self.frame_sql_requests = tk.Frame(self, width=200, height=250, bg='blue')
         self.frame_sql_requests.place(relx=0.2, rely=0.07, relwidth=0.52, relheight=0.5)
         self.frame_sql_inter_del_but = tk.Frame(self, width=1000, height=10)
@@ -40,6 +30,16 @@ class Window(tk.Tk):
         self.frame_sql_commands.place(relx=0.72, rely=0.07, relwidth=0.28, relheight=0.5)
         self.frame_close_save_but = tk.Frame(self, width=1000, height=20)
         self.frame_close_save_but.place(relx=-0.002, rely=0.92, relwidth=1, relheight=0.1)
+
+    def widgets(self):
+        self.db_sql_label()
+        self.db_show()
+        self.sql_requests()
+        self.sql_inter_del_but()
+        self.table_for_db_cont()
+        self.sql_commands()
+        self.sql_symbols_dict()
+        self.close_save_but()
 
     def db_sql_label(self):
         tk.Label(self.frame_db_sql_label, text='Поле для SQL-запроса',
@@ -53,7 +53,7 @@ class Window(tk.Tk):
 
     def db_show(self):
         db_list = db().get_all_tabels()
-        self.db_tables = ttk.Combobox(self.frame_sql_requests, values=db_list)
+        self.db_tables = ttk.Combobox(self.frame_leble_show, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
         self.db_tables.current(0)
 
@@ -110,7 +110,7 @@ class Window(tk.Tk):
                     buts[i]['command'] = lambda i=i: \
                     self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(10, " ").ljust(10, " "))
 
-    def sql_symbol(self):
+    def sql_symbols_dict(self):
         buts_symb = []
         symbols_lst = ['*', ';', "''"]
         relx = 0.74
