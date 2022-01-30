@@ -25,7 +25,7 @@ class Window(tk.Tk):
         self.frame_sql_inter_del_but = tk.Frame(self, width=1000, height=10)
         self.frame_sql_inter_del_but.place(relx=0, rely=0.5, relwidth=1, relheight=0.07)
         self.frame_db_content = tk.Frame(self, width=1000, height=250, bg='green')
-        self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
+        self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.4)
         self.frame_sql_commands = tk.Frame(self, width=280, height=250)
         self.frame_sql_commands.place(relx=0.72, rely=0.07, relwidth=0.28, relheight=0.5)
         self.frame_close_save_but = tk.Frame(self, width=1000, height=20)
@@ -65,7 +65,7 @@ class Window(tk.Tk):
         tk.Button(self.frame_sql_inter_del_but, text='Подключение к БД', fg='black', bg='white',
                   borderwidth=10, command=lambda:
             [db().tabel_content_to_user(self.db_tables.get()),
-             db().tabels_header(self.db_tables.get())]).place(relx=0.03, rely=0.01)
+             db().tabels_header(self.db_tables.get()), self.table_for_db_cont()]).place(relx=0.03, rely=0.01)
         tk.Button(self.frame_sql_inter_del_but, text='Очищение...',
                   fg='black', bg='white', borderwidth=10,
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
@@ -82,9 +82,8 @@ class Window(tk.Tk):
             self.tabel_db_content.heading(header, text=header[1], anchor='center')
         for row in lst:
             self.tabel_db_content.insert('', tk.END, values=row)
-        scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
-        self.tabel_db_content.configure(yscrollcommand=scroll_bd_content_y.set)
-        scroll_bd_content_y.pack(side=tk.RIGHT, fill=tk.Y)
+        # self.tabel_db_content.delete(*self.tabel_db_content.get_children())
+        self.y_scroll()
 
     def sql_commands(self):
         buts = []
@@ -133,6 +132,14 @@ class Window(tk.Tk):
         tk.Button(self.frame_close_save_but, text="Уходя уходи", borderwidth=10,
                   command=self.pop_up_close).place(relx=0.85, rely=0.15)
         tk.Button(self.frame_close_save_but, text="Сохраняя сохраняй", borderwidth=10).place(relx=0.65, rely=0.15)
+        self.x_scroll()
+
+    def y_scroll(self):
+        scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
+        self.tabel_db_content.configure(yscrollcommand=scroll_bd_content_y.set)
+        scroll_bd_content_y.pack(side=tk.RIGHT, fill=tk.Y)
+
+    def x_scroll(self):
         scroll_bd_content_x = ttk.Scrollbar(self.frame_close_save_but, orient='horizontal',
                                             command=self.tabel_db_content.xview)
         self.tabel_db_content.configure(xscrollcommand=scroll_bd_content_x.set)
