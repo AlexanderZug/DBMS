@@ -14,45 +14,50 @@ class Window(tk.Tk):
         self.resizable(False, False)
         self.frames()
 
+
     def frames(self):
+        self.frame_db_sql_label = tk.Frame(self, width=1000, height=20)
+        self.frame_db_sql_label.place(relx=0, rely=0, relwidth=1, relheight=0.07)
         self.db_sql_label()
+        self.frame_sql_requests = tk.Frame(self, width=600, height=200, bg='white')
+        self.frame_sql_requests.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
         self.db_show()
+        self.frame_sql_requests = tk.Frame(self, width=200, height=250, bg='blue')
+        self.frame_sql_requests.place(relx=0.2, rely=0.07, relwidth=0.52, relheight=0.5)
         self.sql_requests()
         self.sql_inter_del_but()
         self.db_content()
+        self.table_for_db_cont()
         self.sql_commands()
         self.close_save_but()
 
     def db_sql_label(self):
-        frame_db_sql_label = tk.Frame(self, width=1000, height=20)
-        frame_db_sql_label.place(relx=0, rely=0, relwidth=1, relheight=0.07)
-        tk.Label(frame_db_sql_label, text='Поле для SQL-запроса',
+        tk.Label(self.frame_db_sql_label, text='Поле для SQL-запроса',
                  height=3, font=self.bold_font).place(relx=0.35, rely=0, relwidth=0.2, relheight=1)
-        tk.Label(frame_db_sql_label, text='Базы данных', height=3, font=self.bold_font).place(relx=0.05,
+        tk.Label(self.frame_db_sql_label, text='Базы данных', height=3, font=self.bold_font).place(relx=0.05,
                                                                                               rely=0, relwidth=0.1,
                                                                                               relheight=1)
-        tk.Label(frame_db_sql_label, text='SQL-хелпер', height=3, font=self.bold_font).place(relx=0.8,
+        tk.Label(self.frame_db_sql_label, text='SQL-хелпер', height=3, font=self.bold_font).place(relx=0.8,
                                                                                              rely=0, relwidth=0.1,
                                                                                              relheight=1)
 
     def db_show(self):
-        frame_sql_requests = tk.Frame(self, width=600, height=200, bg='white')
-        frame_sql_requests.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
         db_list = db().get_all_tabels()
-        self.db_tables = ttk.Combobox(frame_sql_requests, values=db_list)
+        self.db_tables = ttk.Combobox(self.frame_sql_requests, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
+        self.db_tables.current(0)
 
     def sql_requests(self):
-        frame_sql_requests = tk.Frame(self, width=200, height=250, bg='blue')
-        frame_sql_requests.place(relx=0.2, rely=0.07, relwidth=0.52, relheight=0.5)
-        self.txt_sql_req = tk.Text(frame_sql_requests, width=700, height=253, bg='white', fg='black')
+        self.txt_sql_req = tk.Text(self.frame_sql_requests, width=700, height=253, bg='white', fg='black')
         self.txt_sql_req.place(relx=0, rely=0, relwidth=1, relheight=1)
 
     def sql_inter_del_but(self):
         frame_sql_inter_del_but = tk.Frame(self, width=1000, height=10)
         frame_sql_inter_del_but.place(relx=0, rely=0.5, relwidth=1, relheight=0.07)
         tk.Button(frame_sql_inter_del_but, text='Подключение к БД', fg='black', bg='white',
-                  borderwidth=10, command=lambda: db().tabel_content_to_user(self.db_tables.get())).place(relx=0.03, rely=0.01)
+                  borderwidth=10, command=lambda:
+            [db().tabel_content_to_user(self.db_tables.get()),
+             db().tabels_header(self.db_tables.get())]).place(relx=0.03, rely=0.01)
         tk.Button(frame_sql_inter_del_but, text='Очищение...',
                   fg='black', bg='white', borderwidth=10,
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
@@ -61,20 +66,19 @@ class Window(tk.Tk):
                   command=lambda: print(self.txt_sql_req.get('1.0', tk.END).strip())).place(relx=0.46, rely=0.01)
 
     def db_content(self):
-        frame_db_content = tk.Frame(self, width=1000, height=250, bg='green')
-        frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
-        self.tabel_db_content = ttk.Treeview(frame_db_content, show='headings')
+        self.frame_db_content = tk.Frame(self, width=1000, height=250, bg='green')
+        self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
+
+    def table_for_db_cont(self):
+        self.tabel_db_content = ttk.Treeview(self.frame_db_content, show='headings')
         lst = db().tabel_content_to_user(self.db_tables.get())
-        if lst:
-            heads = db().tabels_header()
-            self.tabel_db_content['columns'] = heads
-            for header in heads:
-                self.tabel_db_content.heading(header, text=header[1], anchor='center')
-            for row in lst:
-                self.tabel_db_content.insert('', tk.END, values=row)
-        else:
-            db().tabel_content_to_user(self.db_tables.get())
-        scroll_bd_content_y = ttk.Scrollbar(frame_db_content, command=self.tabel_db_content.yview)
+        heads = db().tabels_header(self.db_tables.get())
+        self.tabel_db_content['columns'] = heads
+        for header in heads:
+            self.tabel_db_content.heading(header, text=header[1], anchor='center')
+        for row in lst:
+            self.tabel_db_content.insert('', tk.END, values=row)
+        scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
         self.tabel_db_content.configure(yscrollcommand=scroll_bd_content_y.set)
         scroll_bd_content_y.pack(side=tk.RIGHT, fill=tk.Y)
 
@@ -97,6 +101,12 @@ class Window(tk.Tk):
             for i in range(len(buts)):
                 buts[i]['command'] = lambda i=i: \
                     self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(6, " ").ljust(6, " "))
+                if len(commands_lst[i]) == 6:
+                    buts[i]['command'] = lambda i=i: \
+                    self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(8, " ").ljust(8, " "))
+                if len(commands_lst[i]) > 6:
+                    buts[i]['command'] = lambda i=i: \
+                    self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(10, " ").ljust(10, " "))
         buts_symb = []
         symbols_lst = ['*', ';', "''"]
         relx = 0.74

@@ -16,17 +16,17 @@ class DBWorker:
         self.__cur.execute("""SELECT name FROM sqlite_master WHERE type='table';""")
         return self.__cur.fetchall()
 
-    def tabels_header(self):
-        self.__cur.execute("PRAGMA table_info(concerts);")
+    def tabels_header(self, table: str):
+        self.__cur.execute("PRAGMA table_info('%s');" % table)
         return self.__cur.fetchall()
 
     def get_sql_requests(self, query: list):
         pass
 
-    def tabel_content_to_user(self, tabel):
+    def tabel_content_to_user(self, table: str):
         try:
-            self.__cur.execute("""SELECT * FROM '%s'""" % tabel)
+            self.__cur.execute("""SELECT * FROM '%s'""" % table)
         except Exception:
             return []
         else:
-            self.__cur.fetchall()
+            return self.__cur.fetchall()
