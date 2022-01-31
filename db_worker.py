@@ -31,6 +31,3 @@ class DBWorker:
             return []
         else:
             return self.__cur.fetchall()
-
-
-# INSERT  INTO shelters (id, name_of_shelter) VALUES(2, 'KatzenHaus')

@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mbox
@@ -76,7 +75,8 @@ class Window(tk.Tk):
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
         tk.Button(self.frame_sql_inter_del_but, text='Вводи, не страшись!', fg='black', bg='white',
                   borderwidth=10,
-                  command=lambda: db().get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip())).place(relx=0.46, rely=0.01)
+                  command=lambda: db().get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip())).place(relx=0.46,
+                                                                                                            rely=0.01)
 
     def table_for_db_cont(self):
         self.frame_db_content = tk.Frame(self, width=1000, height=250)
@@ -96,16 +96,17 @@ class Window(tk.Tk):
 
     def table_columns(self, columns: tuple, index: int):
         if not hasattr(self, 'txt_columns') or index == 0:
-            self.txt_columns = tk.Text(self.frame_leble_show, width=150, height=90, bg='white', fg='black')
+            self.txt_columns = tk.Text(self.frame_leble_show, width=150, height=90, font=self.bold_font,
+                                       bg='white', fg='black')
             self.txt_columns.place(relx=0, rely=0.1, relwidth=0.2, relheight=0.76)
-        self.txt_columns.insert(tk.END, f'{columns}\n')
+        self.txt_columns.insert(tk.END, ''.join(i for i in f'{columns}\n' if i != "'"))
 
     def sql_commands(self):
         buts = []
         row = 0
         column = 0
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
-                        'ORDER BY', 'HAVING', 'DROP', 'INTO', 'DELETE', 'TABEL', 'FROM', 'JOIN']
+                        'ORDER BY', 'HAVING', 'DROP', 'INTO', 'DELETE', 'TABLE', 'FROM', 'JOIN']
         for comm_name in commands_lst:
             buts.append(tk.Button(self.frame_sql_commands, borderwidth=2, ))
             buts[-1].grid(row=row, column=column, padx=0, pady=0)
