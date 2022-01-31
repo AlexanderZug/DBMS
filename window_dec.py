@@ -24,8 +24,6 @@ class Window(tk.Tk):
         self.frame_sql_requests.place(relx=0.2, rely=0.07, relwidth=0.52, relheight=0.5)
         self.frame_sql_inter_del_but = tk.Frame(self, width=1000, height=10)
         self.frame_sql_inter_del_but.place(relx=0, rely=0.5, relwidth=1, relheight=0.07)
-        self.frame_db_content = tk.Frame(self, width=1000, height=100, bg='green')
-        self.frame_db_content.place(relx=0, rely=0.6, relwidth=1, relheight=0.5)
         self.frame_sql_commands = tk.Frame(self, width=280, height=250)
         self.frame_sql_commands.place(relx=0.72, rely=0.07, relwidth=0.28, relheight=0.5)
         self.frame_close_save_but = tk.Frame(self, width=1000, height=20)
@@ -45,17 +43,16 @@ class Window(tk.Tk):
         tk.Label(self.frame_db_sql_label, text='Поле для SQL-запроса',
                  height=3, font=self.bold_font).place(relx=0.35, rely=0, relwidth=0.2, relheight=1)
         tk.Label(self.frame_db_sql_label, text='Базы данных', height=3, font=self.bold_font).place(relx=0.05,
-                                                                                              rely=0, relwidth=0.1,
-                                                                                              relheight=1)
+                                                                                                   rely=0, relwidth=0.1,
+                                                                                                   relheight=1)
         tk.Label(self.frame_db_sql_label, text='SQL-хелпер', height=3, font=self.bold_font).place(relx=0.8,
-                                                                                             rely=0, relwidth=0.1,
-                                                                                             relheight=1)
+                                                                                                  rely=0, relwidth=0.1,
+                                                                                                  relheight=1)
 
     def db_show(self):
         db_list = db().get_all_tabels()
         self.db_tables = ttk.Combobox(self.frame_leble_show, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
-        # self.db_tables.current(0)
 
     def sql_requests(self):
         self.txt_sql_req = tk.Text(self.frame_sql_requests, width=700, height=253, bg='white', fg='black')
@@ -74,6 +71,8 @@ class Window(tk.Tk):
                   command=lambda: print(self.txt_sql_req.get('1.0', tk.END).strip())).place(relx=0.46, rely=0.01)
 
     def table_for_db_cont(self):
+        self.frame_db_content = tk.Frame(self, width=1000, height=250, bg='green')
+        self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
         self.tabel_db_content = ttk.Treeview(self.frame_db_content, show='headings')
         lst = db().tabel_content_to_user(self.db_tables.get())
         heads = db().tabels_header(self.db_tables.get())
@@ -83,7 +82,8 @@ class Window(tk.Tk):
         for row in lst:
             self.tabel_db_content.insert('', tk.END, values=row)
         self.y_scroll()
-        self.tabel_db_content.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.x_scroll()
+        self.tabel_db_content.pack(expand=tk.YES, fill=tk.BOTH)
 
     def sql_commands(self):
         buts = []
@@ -92,7 +92,7 @@ class Window(tk.Tk):
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
                         'ORDER BY', 'HAVING', 'DROP', 'INTO', 'DELETE', 'TABEL', 'FROM', 'JOIN']
         for comm_name in commands_lst:
-            buts.append(tk.Button(self.frame_sql_commands, borderwidth=2,))
+            buts.append(tk.Button(self.frame_sql_commands, borderwidth=2, ))
             buts[-1].grid(row=row, column=column, padx=0, pady=0)
             column += 1
             buts[-1]['text'] = comm_name
@@ -104,10 +104,10 @@ class Window(tk.Tk):
                     self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(6, " ").ljust(6, " "))
                 if len(commands_lst[i]) == 6:
                     buts[i]['command'] = lambda i=i: \
-                    self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(8, " ").ljust(8, " "))
+                        self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(8, " ").ljust(8, " "))
                 if len(commands_lst[i]) > 6:
                     buts[i]['command'] = lambda i=i: \
-                    self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(10, " ").ljust(10, " "))
+                        self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(10, " ").ljust(10, " "))
 
     def sql_symbols_dict(self):
         buts_symb = []
@@ -130,21 +130,19 @@ class Window(tk.Tk):
 
     def close_save_but(self):
         tk.Button(self.frame_close_save_but, text="Уходя уходи", borderwidth=10,
-                  command=self.pop_up_close).place(relx=0.85, rely=0.15)
-        tk.Button(self.frame_close_save_but, text="Сохраняя сохраняй", borderwidth=10).place(relx=0.65, rely=0.15)
-        self.x_scroll()
+                  command=self.pop_up_close).place(relx=0.85, rely=0.05)
+        tk.Button(self.frame_close_save_but, text="Сохраняя сохраняй", borderwidth=10).place(relx=0.65, rely=0.05)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
         self.tabel_db_content.configure(yscrollcommand=scroll_bd_content_y.set)
-        scroll_bd_content_y.place(relx=0.98, rely=0, relwidth=0.1, relheight=0.7)
+        scroll_bd_content_y.pack(side=tk.RIGHT, fill=tk.Y)
 
     def x_scroll(self):
-        scroll_bd_content_x = ttk.Scrollbar(self.frame_close_save_but, orient='horizontal',
+        scroll_bd_content_x = ttk.Scrollbar(self.frame_db_content, orient='horizontal',
                                             command=self.tabel_db_content.xview)
         self.tabel_db_content.configure(xscrollcommand=scroll_bd_content_x.set)
-        scroll_bd_content_x.pack(side=tk.TOP, fill=tk.BOTH)
-        self.tabel_db_content.pack(expand=tk.YES, fill=tk.BOTH)
+        scroll_bd_content_x.pack(side=tk.BOTTOM, fill=tk.BOTH)
 
     def pop_up_close(self):
         answer = mbox.askyesno('default', 'Ты уверен?')
@@ -155,7 +153,6 @@ class Window(tk.Tk):
         anser = mbox.askretrycancel('', 'Что-то пошло не так...')
         if anser is False:  ###cancel == False; retry == True
             pass
-
 
 
 window = Window()
