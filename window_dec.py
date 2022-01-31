@@ -10,7 +10,7 @@ class Window(tk.Tk):
         super().__init__()
         self.title('SQL-worker')
         self.bold_font = 'Helvetica 13 bold'
-        self.geometry('1300x700')
+        self.center_window()
         self.resizable(False, False)
         self.frames()
         self.widgets()
@@ -38,6 +38,12 @@ class Window(tk.Tk):
         self.sql_commands()
         self.sql_symbols_dict()
         self.close_save_but()
+
+    def center_window(self):
+        w, h = 1300, 700
+        sw, sh = self.winfo_screenwidth(), self.winfo_screenheight()
+        x, y = (sw - w) / 2, (sh - h) / 2
+        self.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
     def db_sql_label(self):
         tk.Label(self.frame_db_sql_label, text='Поле для SQL-запроса',
@@ -130,8 +136,8 @@ class Window(tk.Tk):
 
     def close_save_but(self):
         tk.Button(self.frame_close_save_but, text="Уходя уходи", borderwidth=10,
-                  command=self.pop_up_close).place(relx=0.85, rely=0.05)
-        tk.Button(self.frame_close_save_but, text="Сохраняя сохраняй", borderwidth=10).place(relx=0.65, rely=0.05)
+                  command=self.pop_up_close).place(relx=0.85, rely=0.03)
+        tk.Button(self.frame_close_save_but, text="Сохраняя сохраняй", borderwidth=10).place(relx=0.65, rely=0.03)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
