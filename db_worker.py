@@ -20,8 +20,9 @@ class DBWorker:
         self.__cur.execute("PRAGMA table_info('%s');" % table)
         return self.__cur.fetchall()
 
-    def get_sql_requests(self, query: list):
-        pass
+    def get_sql_requests(self, query: str):
+        self.__cur.execute("""%s""" % query)
+        self.__con.commit()
 
     def tabel_content_to_user(self, table: str):
         try:
@@ -30,3 +31,6 @@ class DBWorker:
             return []
         else:
             return self.__cur.fetchall()
+
+
+# INSERT  INTO shelters (id, name_of_shelter) VALUES(2, 'KatzenHaus')

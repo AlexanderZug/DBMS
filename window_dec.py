@@ -20,7 +20,7 @@ class Window(tk.Tk):
         self.frame_db_sql_label.place(relx=0, rely=0, relwidth=1, relheight=0.07)
         self.frame_leble_show = tk.Frame(self, width=100, height=100, bg='white')
         self.frame_leble_show.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
-        self.frame_sql_requests = tk.Frame(self, width=200, height=250, bg='blue')
+        self.frame_sql_requests = tk.Frame(self, width=200, height=250)
         self.frame_sql_requests.place(relx=0.2, rely=0.07, relwidth=0.52, relheight=0.5)
         self.frame_sql_inter_del_but = tk.Frame(self, width=1000, height=10)
         self.frame_sql_inter_del_but.place(relx=0, rely=0.5, relwidth=1, relheight=0.07)
@@ -72,7 +72,7 @@ class Window(tk.Tk):
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
         tk.Button(self.frame_sql_inter_del_but, text='Вводи, не страшись!', fg='black', bg='white',
                   borderwidth=10,
-                  command=lambda: print(self.txt_sql_req.get('1.0', tk.END).strip())).place(relx=0.46, rely=0.01)
+                  command=lambda: db().get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip())).place(relx=0.46, rely=0.01)
 
     def table_for_db_cont(self):
         self.frame_db_content = tk.Frame(self, width=1000, height=250)
@@ -109,7 +109,7 @@ class Window(tk.Tk):
                 if len(commands_lst[i]) == 6:
                     buts[i]['command'] = lambda i=i: \
                         self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(8, " ").ljust(8, " "))
-                if len(commands_lst[i]) > 6:
+                elif len(commands_lst[i]) > 6:
                     buts[i]['command'] = lambda i=i: \
                         self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(10, " ").ljust(10, " "))
 
