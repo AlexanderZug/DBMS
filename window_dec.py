@@ -40,10 +40,10 @@ class Window(tk.Tk):
         self.close_save_but()
 
     def center_window(self):
-        w, h = 1300, 700
-        sw, sh = self.winfo_screenwidth(), self.winfo_screenheight()
-        x, y = (sw - w) / 2, (sh - h) / 2
-        self.geometry('%dx%d+%d+%d' % (w, h, x, y))
+        width, height = 1300, 700
+        s_width, s_height = self.winfo_screenwidth(), self.winfo_screenheight()
+        x_screen, y_screen = (s_width - width) / 2, (s_height - height) / 2
+        self.geometry(f'{width}x{height}+{int(x_screen)}+{int(y_screen)}')
 
     def db_sql_label(self):
         tk.Label(self.frame_db_sql_label, text='Поле для SQL-запроса',
@@ -66,9 +66,7 @@ class Window(tk.Tk):
 
     def sql_inter_del_but(self):
         tk.Button(self.frame_sql_inter_del_but, text='Подключение к БД', fg='black', bg='white',
-                  borderwidth=10, command=lambda:
-            [db().tabel_content_to_user(self.db_tables.get()),
-             db().tabels_header(self.db_tables.get()), self.table_for_db_cont()]).place(relx=0.03, rely=0.01)
+                  borderwidth=10, command=lambda: self.table_for_db_cont()).place(relx=0.03, rely=0.01)
         tk.Button(self.frame_sql_inter_del_but, text='Очищение...',
                   fg='black', bg='white', borderwidth=10,
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
@@ -77,7 +75,7 @@ class Window(tk.Tk):
                   command=lambda: print(self.txt_sql_req.get('1.0', tk.END).strip())).place(relx=0.46, rely=0.01)
 
     def table_for_db_cont(self):
-        self.frame_db_content = tk.Frame(self, width=1000, height=250, bg='green')
+        self.frame_db_content = tk.Frame(self, width=1000, height=250)
         self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
         self.tabel_db_content = ttk.Treeview(self.frame_db_content, show='headings')
         lst = db().tabel_content_to_user(self.db_tables.get())
@@ -156,8 +154,8 @@ class Window(tk.Tk):
             self.destroy()
 
     def pop_up_bd_not_conn(self):
-        anser = mbox.askretrycancel('', 'Что-то пошло не так...')
-        if anser is False:  ###cancel == False; retry == True
+        answer = mbox.askretrycancel('', 'Что-то пошло не так...')
+        if answer is False:  ###cancel == False; retry == True
             pass
 
 

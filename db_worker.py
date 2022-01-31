@@ -3,7 +3,7 @@ import sqlite3
 
 class DBWorker:
     def __init__(self):
-        self.__con = sqlite3.connect('/Users/Polzovatel/PycharmProjects/subd/dist/concerts.db')
+        self.__con = sqlite3.connect('dist/concerts.db')
         self.__cur = self.__con.cursor()
 
     def user_query(self, query: str):
