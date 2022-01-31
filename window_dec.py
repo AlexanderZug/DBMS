@@ -1,3 +1,4 @@
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mbox
@@ -20,7 +21,7 @@ class Window(tk.Tk):
         self.frame_db_sql_label.place(relx=0, rely=0, relwidth=1, relheight=0.07)
         self.frame_leble_show = tk.Frame(self, width=100, height=100, bg='white')
         self.frame_leble_show.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
-        self.frame_sql_requests = tk.Frame(self, width=200, height=250)
+        self.frame_sql_requests = tk.Frame(self, width=200, height=250, )
         self.frame_sql_requests.place(relx=0.2, rely=0.07, relwidth=0.52, relheight=0.5)
         self.frame_sql_inter_del_but = tk.Frame(self, width=1000, height=10)
         self.frame_sql_inter_del_but.place(relx=0, rely=0.5, relwidth=1, relheight=0.07)
@@ -32,6 +33,7 @@ class Window(tk.Tk):
     def widgets(self):
         self.db_sql_label()
         self.db_show()
+        self.table_columns('', 0)
         self.sql_requests()
         self.sql_inter_del_but()
         self.table_for_db_cont()
@@ -63,6 +65,8 @@ class Window(tk.Tk):
     def sql_requests(self):
         self.txt_sql_req = tk.Text(self.frame_sql_requests, width=700, height=253, bg='white', fg='black')
         self.txt_sql_req.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.txt_sql_req.config(insertbackground='black')
+        self.txt_sql_req.focus_set()
 
     def sql_inter_del_but(self):
         tk.Button(self.frame_sql_inter_del_but, text='Подключение к БД', fg='black', bg='white',
@@ -81,13 +85,20 @@ class Window(tk.Tk):
         lst = db().tabel_content_to_user(self.db_tables.get())
         heads = db().tabels_header(self.db_tables.get())
         self.tabel_db_content['columns'] = heads
-        for header in heads:
+        for index, header in enumerate(heads):
             self.tabel_db_content.heading(header, text=header[1], anchor='center')
+            self.table_columns(header[1:], index)
         for row in lst:
             self.tabel_db_content.insert('', tk.END, values=row)
         self.y_scroll()
         self.x_scroll()
         self.tabel_db_content.pack(expand=tk.YES, fill=tk.BOTH)
+
+    def table_columns(self, columns: tuple, index: int):
+        if not hasattr(self, 'txt_columns') or index == 0:
+            self.txt_columns = tk.Text(self.frame_leble_show, width=150, height=90, bg='white', fg='black')
+            self.txt_columns.place(relx=0, rely=0.1, relwidth=0.2, relheight=0.76)
+        self.txt_columns.insert(tk.END, f'{columns}\n')
 
     def sql_commands(self):
         buts = []
@@ -135,7 +146,6 @@ class Window(tk.Tk):
     def close_save_but(self):
         tk.Button(self.frame_close_save_but, text="Уходя уходи", borderwidth=10,
                   command=self.pop_up_close).place(relx=0.85, rely=0.03)
-        tk.Button(self.frame_close_save_but, text="Сохраняя сохраняй", borderwidth=10).place(relx=0.65, rely=0.03)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
