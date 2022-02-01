@@ -6,6 +6,5 @@ def sql_error_handler(func):
         try:
             return func(*args, **kvargs)
         except Exception as sql_error:
-            mbox.showerror('Опять не то ввел...',
-                           sql_error)
+            mbox.showerror('', sql_error)
     return wrapper

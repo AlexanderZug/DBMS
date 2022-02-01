@@ -75,8 +75,8 @@ class Window(tk.Tk):
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
         tk.Button(self.frame_tables_sql_but, text='Вводи, не страшись!', fg='black', bg='white',
                   borderwidth=10,
-                  command=lambda: db().get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip())).place(relx=0.46,
-                                                                                                            rely=0.01)
+                  command=lambda: [db().get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
+                                   self.table_for_db_cont()]).place(relx=0.46, rely=0.01)
 
     def table_for_db_cont(self):
         self.frame_db_content = tk.Frame(self, width=1000, height=250)
@@ -95,7 +95,7 @@ class Window(tk.Tk):
         self.tabel_db_content.pack(expand=tk.YES, fill=tk.BOTH)
 
     def table_columns(self, columns: tuple, index: int):
-        if not hasattr(self, 'txt_columns') or index == 0:
+        if index == 0:
             self.txt_columns = tk.Text(self.frame_db_tables_content, width=150, height=90, font=self.bold_font,
                                        bg='white', fg='black')
             self.txt_columns.place(relx=0, rely=0.1, relwidth=0.2, relheight=0.76)
@@ -147,6 +147,8 @@ class Window(tk.Tk):
     def close_save_but(self):
         tk.Button(self.frame_close_but, text="Уходя уходи", borderwidth=10,
                   command=self.pop_up_close).place(relx=0.85, rely=0.03)
+        tk.Button(self.frame_close_but, text="Обновляя обновляй", borderwidth=10,
+                  command=lambda: self.table_for_db_cont()).place(relx=0.07, rely=0.03)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
@@ -163,11 +165,6 @@ class Window(tk.Tk):
         answer = mbox.askyesno('default', 'Ты уверен?')
         if answer is True:
             self.destroy()
-
-    def pop_up_bd_not_conn(self):
-        answer = mbox.askretrycancel('', 'Что-то пошло не так...')
-        if answer is False:  ###cancel == False; retry == True
-            pass
 
 
 window = Window()
