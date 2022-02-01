@@ -16,18 +16,18 @@ class Window(tk.Tk):
         self.widgets()
 
     def frames(self):
-        self.frame_db_sql_label = tk.Frame(self, width=1000, height=20)
-        self.frame_db_sql_label.place(relx=0, rely=0, relwidth=1, relheight=0.07)
-        self.frame_leble_show = tk.Frame(self, width=100, height=100, bg='white')
-        self.frame_leble_show.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
+        self.frame_title_labels = tk.Frame(self, width=1000, height=20)
+        self.frame_title_labels.place(relx=0, rely=0, relwidth=1, relheight=0.07)
+        self.frame_db_tables_content = tk.Frame(self, width=100, height=100, bg='white')
+        self.frame_db_tables_content.place(relx=0, rely=0.07, relwidth=1, relheight=0.5)
         self.frame_sql_requests = tk.Frame(self, width=200, height=250, )
         self.frame_sql_requests.place(relx=0.2, rely=0.07, relwidth=0.52, relheight=0.5)
-        self.frame_sql_inter_del_but = tk.Frame(self, width=1000, height=10)
-        self.frame_sql_inter_del_but.place(relx=0, rely=0.5, relwidth=1, relheight=0.07)
+        self.frame_tables_sql_but = tk.Frame(self, width=1000, height=10)
+        self.frame_tables_sql_but.place(relx=0, rely=0.5, relwidth=1, relheight=0.07)
         self.frame_sql_commands = tk.Frame(self, width=280, height=250)
         self.frame_sql_commands.place(relx=0.72, rely=0.07, relwidth=0.28, relheight=0.5)
-        self.frame_close_save_but = tk.Frame(self, width=1000, height=20)
-        self.frame_close_save_but.place(relx=-0.002, rely=0.92, relwidth=1, relheight=0.1)
+        self.frame_close_but = tk.Frame(self, width=1000, height=20)
+        self.frame_close_but.place(relx=-0.002, rely=0.92, relwidth=1, relheight=0.1)
 
     def widgets(self):
         self.db_sql_label()
@@ -47,18 +47,18 @@ class Window(tk.Tk):
         self.geometry(f'{width}x{height}+{int(x_screen)}+{int(y_screen)}')
 
     def db_sql_label(self):
-        tk.Label(self.frame_db_sql_label, text='Поле для SQL-запроса',
+        tk.Label(self.frame_title_labels, text='Поле для SQL-запроса',
                  height=3, font=self.bold_font).place(relx=0.35, rely=0, relwidth=0.2, relheight=1)
-        tk.Label(self.frame_db_sql_label, text='Базы данных', height=3, font=self.bold_font).place(relx=0.05,
+        tk.Label(self.frame_title_labels, text='Базы данных', height=3, font=self.bold_font).place(relx=0.05,
                                                                                                    rely=0, relwidth=0.1,
                                                                                                    relheight=1)
-        tk.Label(self.frame_db_sql_label, text='SQL-хелпер', height=3, font=self.bold_font).place(relx=0.8,
+        tk.Label(self.frame_title_labels, text='SQL-хелпер', height=3, font=self.bold_font).place(relx=0.8,
                                                                                                   rely=0, relwidth=0.1,
                                                                                                   relheight=1)
 
     def db_show(self):
         db_list = db().get_all_tabels()
-        self.db_tables = ttk.Combobox(self.frame_leble_show, values=db_list)
+        self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
 
     def sql_requests(self):
@@ -68,12 +68,12 @@ class Window(tk.Tk):
         self.txt_sql_req.focus_set()
 
     def sql_inter_del_but(self):
-        tk.Button(self.frame_sql_inter_del_but, text='Подключение к БД', fg='black', bg='white',
+        tk.Button(self.frame_tables_sql_but, text='Подключение к БД', fg='black', bg='white',
                   borderwidth=10, command=lambda: self.table_for_db_cont()).place(relx=0.03, rely=0.01)
-        tk.Button(self.frame_sql_inter_del_but, text='Очищение...',
+        tk.Button(self.frame_tables_sql_but, text='Очищение...',
                   fg='black', bg='white', borderwidth=10,
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
-        tk.Button(self.frame_sql_inter_del_but, text='Вводи, не страшись!', fg='black', bg='white',
+        tk.Button(self.frame_tables_sql_but, text='Вводи, не страшись!', fg='black', bg='white',
                   borderwidth=10,
                   command=lambda: db().get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip())).place(relx=0.46,
                                                                                                             rely=0.01)
@@ -96,7 +96,7 @@ class Window(tk.Tk):
 
     def table_columns(self, columns: tuple, index: int):
         if not hasattr(self, 'txt_columns') or index == 0:
-            self.txt_columns = tk.Text(self.frame_leble_show, width=150, height=90, font=self.bold_font,
+            self.txt_columns = tk.Text(self.frame_db_tables_content, width=150, height=90, font=self.bold_font,
                                        bg='white', fg='black')
             self.txt_columns.place(relx=0, rely=0.1, relwidth=0.2, relheight=0.76)
         self.txt_columns.insert(tk.END, ''.join(i for i in f'{columns}\n' if i != "'"))
@@ -145,7 +145,7 @@ class Window(tk.Tk):
                   borderwidth=2).place(relx=0.16, rely=0.45, relwidth=0.7, relheight=0.2)
 
     def close_save_but(self):
-        tk.Button(self.frame_close_save_but, text="Уходя уходи", borderwidth=10,
+        tk.Button(self.frame_close_but, text="Уходя уходи", borderwidth=10,
                   command=self.pop_up_close).place(relx=0.85, rely=0.03)
 
     def y_scroll(self):

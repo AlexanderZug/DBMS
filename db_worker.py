@@ -1,4 +1,5 @@
 import sqlite3
+from decorator import sql_error_handler
 
 
 class DBWorker:
@@ -20,6 +21,7 @@ class DBWorker:
         self.__cur.execute("PRAGMA table_info('%s');" % table)
         return self.__cur.fetchall()
 
+    @sql_error_handler
     def get_sql_requests(self, query: str):
         self.__cur.execute("""%s""" % query)
         self.__con.commit()
