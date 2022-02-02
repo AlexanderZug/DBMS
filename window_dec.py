@@ -35,7 +35,7 @@ class Window(tk.Tk):
         self.table_columns('', 0)
         self.sql_requests()
         self.sql_inter_del_but()
-        self.table_for_db_cont()
+        self.sql_requests_for_select()
         self.sql_commands()
         self.sql_symbols_dict()
         self.close_save_but()
@@ -57,7 +57,7 @@ class Window(tk.Tk):
                                                                                                   relheight=1)
 
     def db_show(self):
-        db_list = db().get_all_tabels()
+        db_list = db().get_all_tables()
         self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
 
@@ -69,21 +69,28 @@ class Window(tk.Tk):
 
     def sql_inter_del_but(self):
         tk.Button(self.frame_tables_sql_but, text='Подключение к БД', fg='black', bg='white',
-                  borderwidth=10, command=lambda: self.table_for_db_cont()).place(relx=0.03, rely=0.01)
+                  borderwidth=10, command=lambda: self.table_for_db_cont([])).place(relx=0.03, rely=0.01)
         tk.Button(self.frame_tables_sql_but, text='Очищение...',
                   fg='black', bg='white', borderwidth=10,
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
         tk.Button(self.frame_tables_sql_but, text='Вводи, не страшись!', fg='black', bg='white',
                   borderwidth=10,
                   command=lambda: [db().get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
-                                   self.table_for_db_cont()]).place(relx=0.46, rely=0.01)
+                                   self.sql_requests_for_select()]).place(relx=0.46, rely=0.01)
 
-    def table_for_db_cont(self):
+    def sql_requests_for_select(self):
+        lst = []
+        if self.txt_sql_req.get('1.0', tk.END)[0:8].strip() == 'SELECT':
+            lst = db().get_sql_select_requests(self.txt_sql_req.get('1.0', tk.END))
+        self.table_for_db_cont(lst)
+
+    def table_for_db_cont(self, lst: list):
         self.frame_db_content = tk.Frame(self, width=1000, height=250)
         self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
         self.tabel_db_content = ttk.Treeview(self.frame_db_content, show='headings')
-        lst = db().tabel_content_to_user(self.db_tables.get())
-        heads = db().tabels_header(self.db_tables.get())
+        if not lst:
+            lst = db().send_table_content_to_user(self.db_tables.get())
+        heads = db().get_tables_header(self.db_tables.get())
         self.tabel_db_content['columns'] = heads
         for index, header in enumerate(heads):
             self.tabel_db_content.heading(header, text=header[1], anchor='center')
@@ -147,8 +154,6 @@ class Window(tk.Tk):
     def close_save_but(self):
         tk.Button(self.frame_close_but, text="Уходя уходи", borderwidth=10,
                   command=self.pop_up_close).place(relx=0.85, rely=0.03)
-        tk.Button(self.frame_close_but, text="Обновляя обновляй", borderwidth=10,
-                  command=lambda: self.table_for_db_cont()).place(relx=0.07, rely=0.03)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)

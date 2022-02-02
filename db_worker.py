@@ -13,11 +13,11 @@ class DBWorker:
         if not result: result = None
         return result
 
-    def get_all_tabels(self):
+    def get_all_tables(self):
         self.__cur.execute("""SELECT name FROM sqlite_master WHERE type='table';""")
         return self.__cur.fetchall()
 
-    def tabels_header(self, table: str):
+    def get_tables_header(self, table: str):
         self.__cur.execute("PRAGMA table_info('%s');" % table)
         return self.__cur.fetchall()
 
@@ -26,7 +26,15 @@ class DBWorker:
         self.__cur.execute("""%s""" % query)
         self.__con.commit()
 
-    def tabel_content_to_user(self, table: str):
+    def get_sql_select_requests(self, select_request: str):
+        try:
+            self.__cur.execute("""%s""" % select_request)
+        except Exception:
+            pass
+        else:
+            return self.__cur.fetchall()
+
+    def send_table_content_to_user(self, table: str):
         try:
             self.__cur.execute("""SELECT * FROM '%s'""" % table)
         except Exception:
