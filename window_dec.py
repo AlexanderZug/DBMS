@@ -156,7 +156,7 @@ class Window(tk.Tk):
         tk.Button(self.frame_close_but, text="Уходя уходи", borderwidth=10,
                   command=self.pop_up_close).place(relx=0.85, rely=0.03)
         tk.Button(self.frame_close_but, text='Выбрать БД', fg='black', bg='white',
-                  borderwidth=10, command=lambda: print(fd.askopenfilename())).place(relx=0.04, rely=0.03)
+                  borderwidth=10, command=lambda: [print(fd.askopenfilename())]).place(relx=0.04, rely=0.03)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)

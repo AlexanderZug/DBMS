@@ -1,17 +1,11 @@
 import sqlite3
-from decorator import sql_error_handler
+from decorator import sql_error_handler, select_error
 
 
 class DBWorker:
     def __init__(self):
         self.__con = sqlite3.connect('dist/concerts.db')
         self.__cur = self.__con.cursor()
-
-    def user_query(self, query: str):
-        result = self.__cur.execute(query).fetchall()
-        self.__con.commit()
-        if not result: result = None
-        return result
 
     def get_all_tables(self):
         self.__cur.execute("""SELECT name FROM sqlite_master WHERE type='table';""")
@@ -26,13 +20,10 @@ class DBWorker:
         self.__cur.execute("""%s""" % query)
         self.__con.commit()
 
+    @select_error
     def get_sql_select_requests(self, select_request: str):
-        try:
-            self.__cur.execute("""%s""" % select_request)
-        except Exception:
-            pass
-        else:
-            return self.__cur.fetchall()
+        self.__cur.execute("""%s""" % select_request)
+        return self.__cur.fetchall()
 
     def send_table_content_to_user(self, table: str):
         try:
