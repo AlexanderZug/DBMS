@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mbox
+from tkinter import filedialog as fd
 import webbrowser as wb
 from db_worker import DBWorker as db
 
@@ -68,7 +69,7 @@ class Window(tk.Tk):
         self.txt_sql_req.focus_set()
 
     def sql_inter_del_but(self):
-        tk.Button(self.frame_tables_sql_but, text='Подключение к БД', fg='black', bg='white',
+        tk.Button(self.frame_tables_sql_but, text='Выбрать таблицу', fg='black', bg='white',
                   borderwidth=10, command=lambda: self.table_for_db_cont([])).place(relx=0.03, rely=0.01)
         tk.Button(self.frame_tables_sql_but, text='Очищение...',
                   fg='black', bg='white', borderwidth=10,
@@ -80,7 +81,7 @@ class Window(tk.Tk):
 
     def sql_requests_for_select(self):
         lst = []
-        if self.txt_sql_req.get('1.0', tk.END)[0:8].strip() == 'SELECT':
+        if self.txt_sql_req.get('1.0', tk.END)[0:6].strip() == 'SELECT':
             lst = db().get_sql_select_requests(self.txt_sql_req.get('1.0', tk.END))
         self.table_for_db_cont(lst)
 
@@ -124,13 +125,13 @@ class Window(tk.Tk):
                 column = 0
             for i in range(len(buts)):
                 buts[i]['command'] = lambda i=i: \
-                    self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(6, " ").ljust(6, " "))
+                    self.txt_sql_req.insert(tk.END, commands_lst[i].ljust(6, " "))
                 if len(commands_lst[i]) == 6:
                     buts[i]['command'] = lambda i=i: \
-                        self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(8, " ").ljust(8, " "))
+                        self.txt_sql_req.insert(tk.END, commands_lst[i].ljust(8, " "))
                 elif len(commands_lst[i]) > 6:
                     buts[i]['command'] = lambda i=i: \
-                        self.txt_sql_req.insert(tk.END, commands_lst[i].rjust(10, " ").ljust(10, " "))
+                        self.txt_sql_req.insert(tk.END, commands_lst[i].ljust(10, " "))
 
     def sql_symbols_dict(self):
         buts_symb = []
@@ -143,7 +144,7 @@ class Window(tk.Tk):
             buts_symb[-1]['text'] = symb
             for i in range(len(buts_symb)):
                 buts_symb[i]['command'] = lambda i=i: \
-                    self.txt_sql_req.insert(tk.END, symbols_lst[i].rjust(3, " ").ljust(3, " "))
+                    self.txt_sql_req.insert(tk.END, symbols_lst[i].ljust(3, " "))
         tk.Button(self.frame_sql_commands, text='Справочник SQL-запросов',
                   borderwidth=2,
                   command=lambda: wb.open('https://unetway.com/tutorials/sql')).place(relx=0.16, rely=0.67,
@@ -154,6 +155,8 @@ class Window(tk.Tk):
     def close_save_but(self):
         tk.Button(self.frame_close_but, text="Уходя уходи", borderwidth=10,
                   command=self.pop_up_close).place(relx=0.85, rely=0.03)
+        tk.Button(self.frame_close_but, text='Выбрать БД', fg='black', bg='white',
+                  borderwidth=10, command=lambda: print(fd.askopenfilename())).place(relx=0.04, rely=0.03)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)

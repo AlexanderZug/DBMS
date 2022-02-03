@@ -8,3 +8,4 @@ def sql_error_handler(func):
         except Exception as sql_error:
             mbox.showerror('', sql_error)
     return wrapper
+
