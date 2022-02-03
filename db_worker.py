@@ -15,15 +15,6 @@ class DBWorker:
         self.__cur.execute("PRAGMA table_info('%s');" % table)
         return self.__cur.fetchall()
 
-    @property
-    def con(self):
-        return self.__con
-
-    @con.setter
-    def con(self, user_db: str):
-        self.__con = sqlite3.connect(user_db)
-        self.__cur = self.__con.cursor()
-
     @sql_error_handler
     def get_sql_requests(self, query: str):
         self.__cur.execute("""%s""" % query)
@@ -41,3 +32,12 @@ class DBWorker:
             return []
         else:
             return self.__cur.fetchall()
+
+    @property
+    def con(self):
+        return self.__con
+
+    @con.setter
+    def con(self, user_db: str):
+        self.__con = sqlite3.connect(user_db)
+        self.__cur = self.__con.cursor()
