@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox as mbox
 from tkinter import filedialog as fd
 import webbrowser as wb
-from db_worker import DBWorker as db
+from db_worker import DBWorker
 
 
 class Window(tk.Tk):
@@ -13,8 +13,10 @@ class Window(tk.Tk):
         self.bold_font = 'Helvetica 13 bold'
         self.center_window()
         self.resizable(False, False)
+        self.db = DBWorker()
         self.frames()
         self.widgets()
+
 
     def frames(self):
         self.frame_title_labels = tk.Frame(self, width=1000, height=20)
@@ -58,7 +60,7 @@ class Window(tk.Tk):
                                                                                                   relheight=1)
 
     def db_show(self):
-        db_list = db().get_all_tables()
+        db_list = self.db.get_all_tables()
         self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
 
@@ -76,13 +78,13 @@ class Window(tk.Tk):
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
         tk.Button(self.frame_tables_sql_but, text='Вводи, не страшись!', fg='black', bg='white',
                   borderwidth=10,
-                  command=lambda: [db().get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
+                  command=lambda: [self.db.get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
                                    self.sql_requests_for_select()]).place(relx=0.46, rely=0.01)
 
     def sql_requests_for_select(self):
         lst = []
         if self.txt_sql_req.get('1.0', tk.END)[0:6].strip() == 'SELECT':
-            lst = db().get_sql_select_requests(self.txt_sql_req.get('1.0', tk.END))
+            lst = self.db.get_sql_select_requests(self.txt_sql_req.get('1.0', tk.END))
         self.table_for_db_cont(lst)
 
     def table_for_db_cont(self, lst: list):
@@ -90,8 +92,8 @@ class Window(tk.Tk):
         self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
         self.tabel_db_content = ttk.Treeview(self.frame_db_content, show='headings')
         if not lst:
-            lst = db().send_table_content_to_user(self.db_tables.get())
-        heads = db().get_tables_header(self.db_tables.get())
+            lst = self.db.send_table_content_to_user(self.db_tables.get())
+        heads = self.db.get_tables_header(self.db_tables.get())
         self.tabel_db_content['columns'] = heads
         for index, header in enumerate(heads):
             self.tabel_db_content.heading(header, text=header[1], anchor='center')
@@ -156,7 +158,11 @@ class Window(tk.Tk):
         tk.Button(self.frame_close_but, text="Уходя уходи", borderwidth=10,
                   command=self.pop_up_close).place(relx=0.85, rely=0.03)
         tk.Button(self.frame_close_but, text='Выбрать БД', fg='black', bg='white',
-                  borderwidth=10, command=lambda: [print(fd.askopenfilename())]).place(relx=0.04, rely=0.03)
+                  borderwidth=10, command=self.__new_db_config).place(relx=0.04, rely=0.03)
+
+    def __new_db_config(self):
+        self.db.con = fd.askopenfilename()
+        self.db_show()
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)

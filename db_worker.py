@@ -4,7 +4,7 @@ from decorator import sql_error_handler, select_error
 
 class DBWorker:
     def __init__(self):
-        self.__con = sqlite3.connect('dist/concerts.db')
+        self.__con = sqlite3.connect('')
         self.__cur = self.__con.cursor()
 
     def get_all_tables(self):
@@ -14,6 +14,15 @@ class DBWorker:
     def get_tables_header(self, table: str):
         self.__cur.execute("PRAGMA table_info('%s');" % table)
         return self.__cur.fetchall()
+
+    @property
+    def con(self):
+        return self.__con
+
+    @con.setter
+    def con(self, user_db: str):
+        self.__con = sqlite3.connect(user_db)
+        self.__cur = self.__con.cursor()
 
     @sql_error_handler
     def get_sql_requests(self, query: str):
