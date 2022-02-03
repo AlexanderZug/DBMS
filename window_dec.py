@@ -160,10 +160,6 @@ class Window(tk.Tk):
         tk.Button(self.frame_close_but, text='Выбрать БД', fg='black', bg='white',
                   borderwidth=10, command=self.__new_db_config).place(relx=0.04, rely=0.03)
 
-    def __new_db_config(self):
-        self.db.con = fd.askopenfilename()
-        self.db_show()
-
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
         self.tabel_db_content.configure(yscrollcommand=scroll_bd_content_y.set)
@@ -179,6 +175,10 @@ class Window(tk.Tk):
         answer = mbox.askyesno('default', 'Ты уверен?')
         if answer is True:
             self.destroy()
+
+    def __new_db_config(self):
+        self.db.con = fd.askopenfilename()
+        self.db_show()
 
 
 window = Window()
