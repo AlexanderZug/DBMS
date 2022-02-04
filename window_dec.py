@@ -17,7 +17,6 @@ class Window(tk.Tk):
         self.frames()
         self.widgets()
 
-
     def frames(self):
         self.frame_title_labels = tk.Frame(self, width=1000, height=20)
         self.frame_title_labels.place(relx=0, rely=0, relwidth=1, relheight=0.07)
@@ -34,7 +33,7 @@ class Window(tk.Tk):
 
     def widgets(self):
         self.db_sql_label()
-        self.db_show()
+        self.table_show()
         self.table_columns('', 0)
         self.sql_requests()
         self.sql_inter_del_but()
@@ -59,7 +58,7 @@ class Window(tk.Tk):
                                                                                                   rely=0, relwidth=0.1,
                                                                                                   relheight=1)
 
-    def db_show(self):
+    def table_show(self):
         db_list = self.db.get_all_tables()
         self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
@@ -116,9 +115,10 @@ class Window(tk.Tk):
         row = 0
         column = 0
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
-                        'ORDER BY', 'HAVING', 'DROP', 'INTO', 'DELETE', 'TABLE', 'FROM', 'JOIN']
+                        'ORDER BY', 'HAVING', 'DROP', 'INTO', 'VALUES', 'TABLE', 'FROM', 'JOIN',
+                        'DELETE', 'AND', 'OR', ]
         for comm_name in commands_lst:
-            buts.append(tk.Button(self.frame_sql_commands, borderwidth=2, ))
+            buts.append(tk.Button(self.frame_sql_commands, ))
             buts[-1].grid(row=row, column=column, padx=0, pady=0)
             column += 1
             buts[-1]['text'] = comm_name
@@ -140,25 +140,29 @@ class Window(tk.Tk):
         symbols_lst = ['*', ';', "''"]
         relx = 0.74
         for symb in symbols_lst:
-            buts_symb.append(tk.Button(self.frame_sql_commands, text=symb, borderwidth=3))
-            buts_symb[-1].place(relx=relx, rely=0.24, relwidth=0.08, relheight=0.08)
+            buts_symb.append(tk.Button(self.frame_sql_commands, text=symb, ))
+            buts_symb[-1].place(relx=relx, rely=0.32, relwidth=0.08, relheight=0.08)
             relx += 0.08
             buts_symb[-1]['text'] = symb
             for i in range(len(buts_symb)):
                 buts_symb[i]['command'] = lambda i=i: \
                     self.txt_sql_req.insert(tk.END, symbols_lst[i].ljust(3, " "))
         tk.Button(self.frame_sql_commands, text='Справочник SQL-запросов',
-                  borderwidth=2,
-                  command=lambda: wb.open('https://unetway.com/tutorials/sql')).place(relx=0.16, rely=0.67,
+                  command=lambda: wb.open('https://unetway.com/tutorials/sql')).place(relx=0.16, rely=0.54,
                                                                                       relwidth=0.7, relheight=0.2)
-        tk.Button(self.frame_sql_commands, text='Шаблон таблицы',
-                  borderwidth=2).place(relx=0.16, rely=0.45, relwidth=0.7, relheight=0.2)
+        tk.Button(self.frame_sql_commands, text='PRIMARY KEY',
+                  command=lambda: self.txt_sql_req.insert(tk.END,
+                                                          'PRIMARY KEY'.ljust(12, " "))).place(relx=0.44, rely=0.32,
+                                                                                               relwidth=0.3,
+                                                                                               relheight=0.08)
 
     def close_save_but(self):
-        tk.Button(self.frame_close_but, text="Уходя уходи", borderwidth=10,
+        tk.Button(self.frame_close_but, text="Уходя уходи", borderwidth=2,
                   command=self.pop_up_close).place(relx=0.85, rely=0.03)
-        tk.Button(self.frame_close_but, text='Выбрать БД', fg='black', bg='white',
-                  borderwidth=10, command=self.__new_db_config).place(relx=0.04, rely=0.03)
+        tk.Button(self.frame_close_but, text='Выбрать локальную БД', fg='black', bg='white',
+                  borderwidth=10, command=self.__new_db_config).place(relx=0.04, rely=0.01)
+        tk.Button(self.frame_close_but, text='Выбрать удаленную БД', fg='black', bg='white',
+                  borderwidth=10, command=self.__new_db_config).place(relx=0.2, rely=0.01)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
@@ -178,7 +182,7 @@ class Window(tk.Tk):
 
     def __new_db_config(self):
         self.db.con = fd.askopenfilename()
-        self.db_show()
+        self.table_show()
 
 
 window = Window()

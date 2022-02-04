@@ -28,7 +28,7 @@ class DBWorker:
     def send_table_content_to_user(self, table: str):
         try:
             self.__cur.execute("""SELECT * FROM '%s'""" % table)
-        except Exception:
+        except sqlite3.OperationalError:
             return []
         else:
             return self.__cur.fetchall()
