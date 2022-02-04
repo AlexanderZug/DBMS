@@ -8,7 +8,6 @@ def sql_error_handler(func):
             return func(*args, **kvargs)
         except sqlite3.OperationalError as sql_error:
             mbox.showerror('', sql_error)
-
     return wrapper
 
 
