@@ -38,8 +38,8 @@ class Window(tk.Tk):
         self.sql_requests()
         self.sql_inter_del_but()
         self.sql_requests_for_select()
-        self.sql_commands()
-        self.sql_symbols_dict()
+        self.sql_commands_grid()
+        self.sql_commands_place()
         self.close_save_but()
 
     def center_window(self):
@@ -109,13 +109,13 @@ class Window(tk.Tk):
             self.txt_columns.place(relx=0, rely=0.1, relwidth=0.2, relheight=0.76)
         self.txt_columns.insert(tk.END, ''.join(i for i in f'{columns}\n' if i != "'"))
 
-    def sql_commands(self):
+    def sql_commands_grid(self):
         buts = []
         row = 0
         column = 0
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
                         'ORDER BY', 'HAVING', 'DROP', 'INTO', 'VALUES', 'TABLE', 'FROM', 'JOIN',
-                        'DELETE', 'AND', 'OR',]
+                        'DELETE',]
         for comm_name in commands_lst:
             buts.append(tk.Button(self.frame_sql_commands, ))
             buts[-1].grid(row=row, column=column, padx=0, pady=0)
@@ -133,28 +133,29 @@ class Window(tk.Tk):
                 elif len(commands_lst[i]) > 6:
                     buts[i]['command'] = lambda i=i: \
                         self.txt_sql_req.insert(tk.END, commands_lst[i].ljust(10, " "))
-                elif len(commands_lst[i]) < 4:
-                    buts[i]['command'] = lambda i=i: \
-                        self.txt_sql_req.insert(tk.END, commands_lst[i].ljust(4, " "))
 
-    def sql_symbols_dict(self):
+    def sql_commands_place(self):
         buts_symb = []
-        symbols_lst = ['*', ';', "''"]
-        relx = 0.74
+        symbols_lst = ['AND', 'OR', '*', ';', "''"]
+        relx = 0.05
         for symb in symbols_lst:
             buts_symb.append(tk.Button(self.frame_sql_commands, text=symb,))
-            buts_symb[-1].place(relx=relx, rely=0.32, relwidth=0.08, relheight=0.08)
-            relx += 0.08
+            buts_symb[-1].place(relx=relx, rely=0.32, relwidth=0.11, relheight=0.08)
+            relx += 0.12
             buts_symb[-1]['text'] = symb
             for i in range(len(buts_symb)):
-                buts_symb[i]['command'] = lambda i=i: \
-                    self.txt_sql_req.insert(tk.END, symbols_lst[i].ljust(3, " "))
+                if len(symbols_lst[i]) > 2:
+                    buts_symb[i]['command'] = lambda i=i: \
+                        self.txt_sql_req.insert(tk.END, symbols_lst[i].ljust(4, " "))
+                else:
+                    buts_symb[i]['command'] = lambda i=i: \
+                        self.txt_sql_req.insert(tk.END, symbols_lst[i].ljust(3, " "))
         tk.Button(self.frame_sql_commands, text='Справочник SQL-запросов',
                   command=lambda: wb.open('https://unetway.com/tutorials/sql')).place(relx=0.16, rely=0.54,
                                                                                       relwidth=0.7, relheight=0.2)
         tk.Button(self.frame_sql_commands, text='PRIMARY KEY',
                   command=lambda: self.txt_sql_req.insert(tk.END,
-                                                          'PRIMARY KEY'.ljust(12, " "))).place(relx=0.44, rely=0.32,
+                                                          'PRIMARY KEY'.ljust(12, " "))).place(relx=0.65, rely=0.32,
                                                                                                relwidth=0.3,
                                                                                                relheight=0.08)
 
