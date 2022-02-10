@@ -3,9 +3,8 @@ import webbrowser as wb
 from tkinter import messagebox as mbox
 from tkinter import filedialog as fd
 from tkinter import ttk
-from PostgreSQL import DBPostgreSQL
-from db_worker import SQLite
-from choose_bds import EntryFrames
+from code_DBMS.PostgreSQL import DBPostgreSQL
+from code_DBMS.SQLite import SQLite
 from loguru import logger
 
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='00:00', compression='zip')
@@ -64,8 +63,8 @@ class Window(tk.Tk):
                                                                                                   relheight=1)
 
     def table_show(self):
-        self.db_list = self.db.get_all_tables()
-        self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=self.db_list)
+        db_list = self.db.get_all_tables()
+        self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
 
     def sql_requests(self):
@@ -99,9 +98,14 @@ class Window(tk.Tk):
             lst = self.db.send_table_content_to_user(self.db_tables.get())
         heads = self.db.get_tables_header(self.db_tables.get())
         self.tabel_db_content['columns'] = heads
-        for index, header in enumerate(heads):
-            self.tabel_db_content.heading(header, text=header[1], anchor='center')
-            self.table_columns(header[0:], index)
+        if isinstance(self.db, SQLite):
+            for index, header in enumerate(heads):
+                self.tabel_db_content.heading(header, text=header[1], anchor='center')
+                self.table_columns(header[0:], index)
+        else:
+            for index, header in enumerate(heads):
+                self.tabel_db_content.heading(header, text=header[0], anchor='center')
+                self.table_columns(header[0:], index)
         for row in lst:
             self.tabel_db_content.insert('', tk.END, values=row)
         self.y_scroll()
@@ -167,10 +171,10 @@ class Window(tk.Tk):
 
     def close_save_but(self):
         tk.Button(self.frame_close_but, text="Уходя уходи", command=self.pop_up_close).place(relx=0.85, rely=0.03)
-        tk.Button(self.frame_close_but, text='Выбрать локальную БД', fg='black', bg='white',
+        tk.Button(self.frame_close_but, text='Выбрать локальную БД (SQLite)', fg='black', bg='white',
                   command=self.__new_db_config).place(relx=0.04, rely=0.01)
-        tk.Button(self.frame_close_but, text='Выбрать удаленную БД (PostgreSQL)', fg='black',
-                  bg='white', command=self.__new_postgre_config).place(relx=0.2, rely=0.01)
+        tk.Button(self.frame_close_but, text='Подключится к удаленной БД (PostgreSQL)', fg='black',
+                  bg='white', command=self.__new_postgre_config).place(relx=0.25, rely=0.01)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
@@ -201,7 +205,6 @@ class Window(tk.Tk):
     def __new_postgre_config(self):
         if isinstance(self.db, SQLite):
             self.db = DBPostgreSQL()
-            self.db.con = EntryFrames().btn_entry()
             self.table_show()
 
 

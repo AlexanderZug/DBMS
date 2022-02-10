@@ -1,7 +1,7 @@
 import sqlite3
 
-from abstract_method import DBWorker
-from decorator import sql_error_handler, select_error
+from code_DBMS.abstract_method import DBWorker
+from code_DBMS.decorator import sql_error_handler, select_error
 from loguru import logger
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
 

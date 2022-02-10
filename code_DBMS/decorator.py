@@ -48,9 +48,8 @@ def select_error_postgres(func):
 def postgres_init_massages(func):
     def wrapper(*args, **kvargs):
         try:
-            mbox.showinfo('', "Connection to PostgreSQL DB successful")
             return func(*args, **kvargs)
         except Exception as e:
-            mbox.showerror('', f"The error '{e}' occurred")
+            mbox.showerror('', f"Ошибка подключения: '{e}'")
 
     return wrapper
