@@ -7,7 +7,7 @@ from code_DBMS.PostgreSQL import DBPostgreSQL
 from code_DBMS.SQLite import SQLite
 from loguru import logger
 
-logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='00:00', compression='zip')
+logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
 
 
 class Window(tk.Tk):
@@ -62,6 +62,7 @@ class Window(tk.Tk):
                                                                                                   rely=0, relwidth=0.1,
                                                                                                   relheight=1)
 
+    @logger.catch
     def table_show(self):
         db_list = self.db.get_all_tables()
         self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
@@ -192,16 +193,17 @@ class Window(tk.Tk):
         if answer is True:
             self.destroy()
 
+    @logger.catch
     def __new_db_config(self):
         if isinstance(self.db, DBPostgreSQL):
             self.db = SQLite()
             self.db.con = fd.askopenfilename()
             self.table_show()
         else:
-            self.db = SQLite()
             self.db.con = fd.askopenfilename()
             self.table_show()
 
+    @logger.catch
     def __new_postgre_config(self):
         if isinstance(self.db, SQLite):
             self.db = DBPostgreSQL()
