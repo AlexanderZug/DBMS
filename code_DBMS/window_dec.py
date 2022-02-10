@@ -3,8 +3,8 @@ import webbrowser as wb
 from tkinter import messagebox as mbox
 from tkinter import filedialog as fd
 from tkinter import ttk
-from code_DBMS.PostgreSQL import DBPostgreSQL
-from code_DBMS.SQLite import SQLite
+from PostgreSQL import DBPostgreSQL
+from SQLite import SQLite
 from loguru import logger
 
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
