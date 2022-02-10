@@ -4,7 +4,6 @@ from decorators import sql_error_handler
 from loguru import logger
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
 
-#HardCore
 
 class SQLite(DBWorker):
     def __init__(self):
