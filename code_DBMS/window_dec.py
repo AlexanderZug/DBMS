@@ -7,7 +7,8 @@ from PostgreSQL import DBPostgreSQL
 from SQLite import SQLite
 from loguru import logger
 
-logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
+logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip') # This is logger(Use: Loguru)
+print()
 
 
 class Window(tk.Tk):
