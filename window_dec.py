@@ -7,7 +7,9 @@ from PostgreSQL import DBPostgreSQL
 from db_worker import SQLite
 from choose_bds import EntryFrames
 from loguru import logger
+
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='00:00', compression='zip')
+
 
 class Window(tk.Tk):
     def __init__(self):
@@ -16,9 +18,7 @@ class Window(tk.Tk):
         self.bold_font = 'Helvetica 13 bold'
         self.center_window()
         self.resizable(False, False)
-        # self.db = SQLite()
-        # self.db_postgres = DBPostgreSQL()
-        self.db_postgres = SQLite()
+        self.db = SQLite()
         self.frames()
         self.widgets()
 
@@ -64,8 +64,8 @@ class Window(tk.Tk):
                                                                                                   relheight=1)
 
     def table_show(self):
-        db_list = self.db_postgres.get_all_tables()
-        self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
+        self.db_list = self.db.get_all_tables()
+        self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=self.db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
 
     def sql_requests(self):
@@ -81,13 +81,13 @@ class Window(tk.Tk):
                   fg='black', bg='white',
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
         tk.Button(self.frame_tables_sql_but, text='Вводи, не страшись!', fg='black', bg='white',
-                  command=lambda: [self.db_postgres.get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
+                  command=lambda: [self.db.get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
                                    self.sql_requests_for_select()]).place(relx=0.46, rely=0.01)
 
     def sql_requests_for_select(self):
         lst = []
         if self.txt_sql_req.get('1.0', tk.END)[0:6].strip() == 'SELECT':
-            lst = self.db_postgres.get_sql_select_requests(self.txt_sql_req.get('1.0', tk.END))
+            lst = self.db.get_sql_select_requests(self.txt_sql_req.get('1.0', tk.END))
         self.table_for_db_cont(lst)
 
     @logger.catch
@@ -96,8 +96,8 @@ class Window(tk.Tk):
         self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
         self.tabel_db_content = ttk.Treeview(self.frame_db_content, show='headings')
         if not lst:
-            lst = self.db_postgres.send_table_content_to_user(self.db_tables.get())
-        heads = self.db_postgres.get_tables_header(self.db_tables.get())
+            lst = self.db.send_table_content_to_user(self.db_tables.get())
+        heads = self.db.get_tables_header(self.db_tables.get())
         self.tabel_db_content['columns'] = heads
         for index, header in enumerate(heads):
             self.tabel_db_content.heading(header, text=header[1], anchor='center')
@@ -189,12 +189,21 @@ class Window(tk.Tk):
             self.destroy()
 
     def __new_db_config(self):
-        self.db_postgres.con = fd.askopenfilename()
-        self.table_show()
+        if isinstance(self.db, DBPostgreSQL):
+            self.db = SQLite()
+            self.db.con = fd.askopenfilename()
+            self.table_show()
+        else:
+            self.db = SQLite()
+            self.db.con = fd.askopenfilename()
+            self.table_show()
 
     def __new_postgre_config(self):
-        self.db_postgres = EntryFrames().btn_entry()
-        self.table_show()
+        if isinstance(self.db, SQLite):
+            self.db = DBPostgreSQL()
+            self.db.con = EntryFrames().btn_entry()
+            self.table_show()
+
 
 window = Window()
 window.mainloop()

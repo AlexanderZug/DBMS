@@ -57,7 +57,7 @@ class DBPostgreSQL(DBWorker):
     #     return self.con
     #
     # @con.setter
-    # def con(self, user_name = 'postgres', password = '1234', host_name = '127.0.0.1', db_name = 'postgres'):
+    # def con(self, user_name='postgres', password='1234', host_name='127.0.0.1', db_name='postgres'):
     #     self.con = psycopg2.connect(database=db_name, user=user_name, password=password, host=host_name,
     #                                     port="5432")
     #     self.cur = self.con.cursor()

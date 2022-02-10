@@ -33,6 +33,7 @@ class SQLite(DBWorker):
         self.__cur.execute("""%s""" % select_request)
         return self.__cur.fetchall()
 
+    @logger.catch
     def send_table_content_to_user(self, table: str):
         try:
             self.__cur.execute("""SELECT * FROM '%s'""" % table)
