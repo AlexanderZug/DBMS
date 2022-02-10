@@ -3,8 +3,11 @@ import webbrowser as wb
 from tkinter import messagebox as mbox
 from tkinter import filedialog as fd
 from tkinter import ttk
-from db_worker import DBWorker
-
+from PostgreSQL import DBPostgreSQL
+from db_worker import SQLite
+from choose_bds import EntryFrames
+from loguru import logger
+logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='00:00', compression='zip')
 
 class Window(tk.Tk):
     def __init__(self):
@@ -13,7 +16,9 @@ class Window(tk.Tk):
         self.bold_font = 'Helvetica 13 bold'
         self.center_window()
         self.resizable(False, False)
-        self.db = DBWorker()
+        # self.db = SQLite()
+        # self.db_postgres = DBPostgreSQL()
+        self.db_postgres = SQLite()
         self.frames()
         self.widgets()
 
@@ -34,7 +39,7 @@ class Window(tk.Tk):
     def widgets(self):
         self.db_sql_label()
         self.table_show()
-        self.table_columns('',0)
+        self.table_columns('', 0)
         self.sql_requests()
         self.sql_inter_del_but()
         self.sql_requests_for_select()
@@ -59,7 +64,7 @@ class Window(tk.Tk):
                                                                                                   relheight=1)
 
     def table_show(self):
-        db_list = self.db.get_all_tables()
+        db_list = self.db_postgres.get_all_tables()
         self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
 
@@ -76,26 +81,27 @@ class Window(tk.Tk):
                   fg='black', bg='white',
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
         tk.Button(self.frame_tables_sql_but, text='Вводи, не страшись!', fg='black', bg='white',
-                  command=lambda: [self.db.get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
+                  command=lambda: [self.db_postgres.get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
                                    self.sql_requests_for_select()]).place(relx=0.46, rely=0.01)
 
     def sql_requests_for_select(self):
         lst = []
         if self.txt_sql_req.get('1.0', tk.END)[0:6].strip() == 'SELECT':
-            lst = self.db.get_sql_select_requests(self.txt_sql_req.get('1.0', tk.END))
+            lst = self.db_postgres.get_sql_select_requests(self.txt_sql_req.get('1.0', tk.END))
         self.table_for_db_cont(lst)
 
+    @logger.catch
     def table_for_db_cont(self, lst: list):
         self.frame_db_content = ttk.Frame(self, width=1000, height=250)
         self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
         self.tabel_db_content = ttk.Treeview(self.frame_db_content, show='headings')
         if not lst:
-            lst = self.db.send_table_content_to_user(self.db_tables.get())
-        heads = self.db.get_tables_header(self.db_tables.get())
+            lst = self.db_postgres.send_table_content_to_user(self.db_tables.get())
+        heads = self.db_postgres.get_tables_header(self.db_tables.get())
         self.tabel_db_content['columns'] = heads
         for index, header in enumerate(heads):
             self.tabel_db_content.heading(header, text=header[1], anchor='center')
-            self.table_columns(header[1:], index)
+            self.table_columns(header[0:], index)
         for row in lst:
             self.tabel_db_content.insert('', tk.END, values=row)
         self.y_scroll()
@@ -115,7 +121,7 @@ class Window(tk.Tk):
         column = 0
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
                         'ORDER BY', 'HAVING', 'DROP', 'INTO', 'VALUES', 'TABLE', 'FROM', 'JOIN',
-                        'DELETE',]
+                        'DELETE', ]
         for comm_name in commands_lst:
             buts.append(tk.Button(self.frame_sql_commands, ))
             buts[-1].grid(row=row, column=column, padx=0, pady=0)
@@ -139,7 +145,7 @@ class Window(tk.Tk):
         symbols_lst = ['AND', 'OR', '*', ';', "''"]
         relx = 0.05
         for symb in symbols_lst:
-            buts_symb.append(tk.Button(self.frame_sql_commands, text=symb,))
+            buts_symb.append(tk.Button(self.frame_sql_commands, text=symb, ))
             buts_symb[-1].place(relx=relx, rely=0.32, relwidth=0.11, relheight=0.08)
             relx += 0.12
             buts_symb[-1]['text'] = symb
@@ -163,8 +169,8 @@ class Window(tk.Tk):
         tk.Button(self.frame_close_but, text="Уходя уходи", command=self.pop_up_close).place(relx=0.85, rely=0.03)
         tk.Button(self.frame_close_but, text='Выбрать локальную БД', fg='black', bg='white',
                   command=self.__new_db_config).place(relx=0.04, rely=0.01)
-        tk.Button(self.frame_close_but, text='Выбрать удаленную БД', fg='black', bg='white',
-                  command=self.__new_db_config).place(relx=0.2, rely=0.01)
+        tk.Button(self.frame_close_but, text='Выбрать удаленную БД (PostgreSQL)', fg='black',
+                  bg='white', command=self.__new_postgre_config).place(relx=0.2, rely=0.01)
 
     def y_scroll(self):
         scroll_bd_content_y = ttk.Scrollbar(self.frame_db_content, command=self.tabel_db_content.yview)
@@ -183,9 +189,12 @@ class Window(tk.Tk):
             self.destroy()
 
     def __new_db_config(self):
-        self.db.con = fd.askopenfilename()
+        self.db_postgres.con = fd.askopenfilename()
         self.table_show()
 
+    def __new_postgre_config(self):
+        self.db_postgres = EntryFrames().btn_entry()
+        self.table_show()
 
 window = Window()
 window.mainloop()
