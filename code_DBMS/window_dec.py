@@ -195,13 +195,9 @@ class Window(tk.Tk):
 
     @logger.catch
     def __new_db_config(self):
-        if isinstance(self.db, DBPostgreSQL):
-            self.db = SQLite()
-            self.db.con = fd.askopenfilename()
-            self.table_show()
-        else:
-            self.db.con = fd.askopenfilename()
-            self.table_show()
+        self.db = SQLite()
+        self.db.con = fd.askopenfilename()
+        self.table_show()
 
     @logger.catch
     def __new_postgre_config(self):
