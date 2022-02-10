@@ -1,8 +1,8 @@
 import psycopg2
 from psycopg2 import errors
-from code_DBMS.abstract_method import DBWorker
-from code_DBMS.decorators import sql_error_handler_postgres, select_error_postgres, postgres_init_massages
-from code_DBMS.config import host_name, user_name, password, db_name
+from abstract_method import DBWorker
+from decorators import sql_error_handler_postgres, postgres_init_massages
+from config import host_name, user_name, password, db_name
 from loguru import logger
 
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
@@ -21,11 +21,9 @@ class DBPostgreSQL(DBWorker):
         return self.__cur.fetchall()
 
     @logger.catch
+    @sql_error_handler_postgres
     def get_tables_header(self, table: str):
-        try:
-            self.__cur.execute("""SELECT * FROM %s LIMIT 1""" % table)
-        except psycopg2.errors.SyntaxError:
-            return []
+        self.__cur.execute("""SELECT * FROM %s LIMIT 1""" % table)
         return self.__cur.description
 
     @logger.catch
@@ -34,7 +32,7 @@ class DBPostgreSQL(DBWorker):
         self.__cur.execute("""%s""" % query)
 
     @logger.catch
-    @select_error_postgres
+    @sql_error_handler_postgres
     def get_sql_select_requests(self, select_request: str):
         self.__cur.execute("""%s""" % select_request)
         return self.__cur.fetchall()

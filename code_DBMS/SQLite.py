@@ -1,7 +1,6 @@
 import sqlite3
-
 from code_DBMS.abstract_method import DBWorker
-from code_DBMS.decorators import sql_error_handler, select_error
+from code_DBMS.decorators import sql_error_handler
 from loguru import logger
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
 
@@ -28,7 +27,7 @@ class SQLite(DBWorker):
         self.__con.commit()
 
     @logger.catch
-    @select_error
+    @sql_error_handler
     def get_sql_select_requests(self, select_request: str):
         self.__cur.execute("""%s""" % select_request)
         return self.__cur.fetchall()
