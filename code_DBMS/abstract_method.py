@@ -22,3 +22,11 @@ class DBWorker(ABC):
     @abstractmethod
     def send_table_content_to_user(self, table: str):
         pass
+
+    @abstractmethod
+    def con(self):
+        pass
+
+    @abstractmethod
+    def con(self, user_data: tuple|str):
+        pass

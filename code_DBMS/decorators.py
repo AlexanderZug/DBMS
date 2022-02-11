@@ -28,7 +28,7 @@ def postgres_init_massages(func):
     def wrapper(*args, **kvargs):
         try:
             return func(*args, **kvargs)
-        except Exception as e:
-            mbox.showerror('', f"Ошибка подключения: '{e}'")
+        except Exception:
+            pass
 
     return wrapper

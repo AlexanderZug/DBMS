@@ -2,7 +2,6 @@ import psycopg2
 from psycopg2 import errors
 from abstract_method import DBWorker
 from decorators import sql_error_handler_postgres, postgres_init_massages
-from config import host_name, user_name, password, db_name
 from loguru import logger
 
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
@@ -11,7 +10,7 @@ logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', r
 class DBPostgreSQL(DBWorker):
     @postgres_init_massages
     def __init__(self):
-        self.__con = psycopg2.connect(database=db_name, user=user_name, password=password, host=host_name)
+        self.__con = psycopg2.connect(database=None, user=None, password=None, host=None)
         self.__con.autocommit = True
         self.__cur = self.__con.cursor()
 
@@ -45,3 +44,14 @@ class DBPostgreSQL(DBWorker):
             return []
         else:
             return self.__cur.fetchall()
+
+    @property
+    def con(self):
+        return self.__con
+
+    @con.setter
+    def con(self, user_data: tuple):
+        self.__con = psycopg2.connect(database=user_data[3], user=user_data[0], password=user_data[1],
+                                      host=user_data[2])
+        self.__con.autocommit = True
+        self.__cur = self.__con.cursor()

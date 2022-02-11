@@ -7,6 +7,8 @@ from PostgreSQL import DBPostgreSQL
 from SQLite import SQLite
 from loguru import logger
 
+from window_user_data_postrge import UserForm
+
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
 
 
@@ -203,6 +205,7 @@ class Window(tk.Tk):
     def __new_postgre_config(self):
         if isinstance(self.db, SQLite):
             self.db = DBPostgreSQL()
+            self.db.con = UserForm(self).open()
             self.table_show()
 
 
