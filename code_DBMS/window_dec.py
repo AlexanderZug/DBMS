@@ -7,7 +7,7 @@ from PostgreSQL import DBPostgreSQL
 from SQLite import SQLite
 from loguru import logger
 
-from window_user_data_postrge import UserForm
+from code_DBMS.window_user_data_postrge import UserForm
 
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
 
