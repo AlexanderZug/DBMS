@@ -8,7 +8,7 @@ from loguru import logger
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
 
 
-class DBPostgreSQL(DBWorker):
+class PostgreSQL(DBWorker):
     @postgres_init_massages
     def __init__(self):
         self.__con = psycopg2.connect(database=None, user=None, password=None, host=None)

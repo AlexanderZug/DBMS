@@ -3,7 +3,7 @@ import webbrowser as wb
 from tkinter import messagebox as mbox
 from tkinter import filedialog as fd
 from tkinter import ttk
-from PostgreSQL import DBPostgreSQL
+from PostgreSQL import PostgreSQL
 from SQLite import SQLite
 from loguru import logger
 from window_user_data_postrge import UserForm
@@ -12,6 +12,11 @@ logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', r
 
 
 class Window(tk.Tk):
+    """
+    The class has a Tkinter interface with business logic.
+    It accepts user requests and switches the processing strategy.
+    """
+
     def __init__(self):
         super().__init__()
         self.title('SQL-worker')
@@ -64,12 +69,12 @@ class Window(tk.Tk):
                                                                                                   relheight=1)
 
     @logger.catch
-    def table_show(self):
+    def table_show(self):  # The method takes all tables' names from BD.
         db_list = self.db.get_all_tables()
         self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
 
-    def sql_requests(self):
+    def sql_requests(self):  # The method creates the text-field for sql requests.
         self.txt_sql_req = tk.Text(self.frame_sql_requests, width=700, height=253, bg='white', fg='black')
         self.txt_sql_req.place(relx=0, rely=0, relwidth=1, relheight=1)
         self.txt_sql_req.config(insertbackground='black')
@@ -81,18 +86,21 @@ class Window(tk.Tk):
         tk.Button(self.frame_tables_sql_but, text='Очищение...',
                   fg='black', bg='white',
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
+        #  It accepts two versions pf sql requests - select request (method) and other requests (get text).
         tk.Button(self.frame_tables_sql_but, text='Вводи, не страшись!', fg='black', bg='white',
                   command=lambda: [self.db.get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
                                    self.sql_requests_for_select()]).place(relx=0.46, rely=0.01)
 
-    def sql_requests_for_select(self):
+    def sql_requests_for_select(self):  # The method checks whether the request is select. If the truth, transmits it
+        # as a list in the table. Otherwise returns a blank list.
         lst = []
         if self.txt_sql_req.get('1.0', tk.END)[0:6].strip() == 'SELECT':
             lst = self.db.get_sql_select_requests(self.txt_sql_req.get('1.0', tk.END))
         self.table_for_db_cont(lst)
 
     @logger.catch
-    def table_for_db_cont(self, lst: list):
+    def table_for_db_cont(self, lst: list):  # The method takes the name of the columns and their content and
+        # displays the user.
         self.frame_db_content = ttk.Frame(self, width=1000, height=250)
         self.frame_db_content.place(relx=0, rely=0.57, relwidth=1, relheight=0.35)
         self.tabel_db_content = ttk.Treeview(self.frame_db_content, show='headings')
@@ -100,7 +108,8 @@ class Window(tk.Tk):
             lst = self.db.send_table_content_to_user(self.db_tables.get())
         heads = self.db.get_tables_header(self.db_tables.get())
         self.tabel_db_content['columns'] = heads
-        if isinstance(self.db, SQLite):
+        if isinstance(self.db, SQLite):  # This check is necessary, since the name of the column in SQLite and
+            # Postgres are located under different indexes.
             for index, header in enumerate(heads):
                 self.tabel_db_content.heading(header, text=header[1], anchor='center')
                 self.table_columns(header[0:], index)
@@ -114,7 +123,7 @@ class Window(tk.Tk):
         self.x_scroll()
         self.tabel_db_content.pack(expand=tk.YES, fill=tk.BOTH)
 
-    def table_columns(self, columns: str, index: int):
+    def table_columns(self, columns: str, index: int):  # The method shows table settings.
         if index == 0:
             self.txt_columns = tk.Text(self.frame_db_tables_content, width=150, height=90, font=self.bold_font,
                                        bg='white', fg='black')
@@ -127,7 +136,7 @@ class Window(tk.Tk):
         column = 0
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
                         'ORDER BY', 'HAVING', 'DROP', 'INTO', 'VALUES', 'TABLE', 'FROM', 'JOIN',
-                        'DELETE',]
+                        'DELETE', ]
         for comm_name in commands_lst:
             buts.append(tk.Button(self.frame_sql_commands, ))
             buts[-1].grid(row=row, column=column, padx=0, pady=0)
@@ -148,7 +157,7 @@ class Window(tk.Tk):
 
     def sql_commands_place(self):
         buts_symb = []
-        symbols_lst = ['AND', 'OR', '*', ';', "''",]
+        symbols_lst = ['AND', 'OR', '*', ';', "''", ]
         relx = 0.05
         for symb in symbols_lst:
             buts_symb.append(tk.Button(self.frame_sql_commands, text=symb, ))
@@ -195,18 +204,21 @@ class Window(tk.Tk):
             self.destroy()
 
     @logger.catch
-    def __new_db_config(self):
+    def __new_db_config(self):  # The method switches to SQLite-strategy.
         self.db = SQLite()
         self.db.con = fd.askopenfilename()
         self.table_show()
 
     @logger.catch
-    def __new_postgre_config(self):
+    def __new_postgre_config(self):  # The method switches to Postgres-strategy.
         if isinstance(self.db, SQLite):
-            self.db = DBPostgreSQL()
+            self.db = PostgreSQL()
             self.db.con = UserForm(self).open_user_data_postgres_window()
             self.table_show()
-        elif isinstance(self.db, DBPostgreSQL) and hasattr != (self.db, 'con'):
+            # This check is necessary that in the
+            # case of incorrect data or closing the window without entering data it is possible to call the
+            # window again (since otherwise the strategy remains the same and the window is not called).
+        elif isinstance(self.db, PostgreSQL) and hasattr != (self.db, 'con'):
             self.db.con = UserForm(self).open_user_data_postgres_window()
             self.table_show()
 

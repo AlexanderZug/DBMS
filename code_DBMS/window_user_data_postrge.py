@@ -4,6 +4,9 @@ from tkinter import messagebox as mbox
 
 
 class UserForm(tk.Toplevel):
+    """
+    The class creates a new window to get user data for Postgres-connection.
+    """
     def __init__(self, parent):
         super().__init__(parent)
         self.title('Введите данные')
@@ -22,7 +25,7 @@ class UserForm(tk.Toplevel):
         self.geometry(f'{width}x{height}+{int(x_screen)}+{int(y_screen)}')
 
     def on_closing(self):
-        if mbox.askyesno("Quit", "Необходимо ввести данные для подключения, уверен, что ты нас покидаешь?"):
+        if mbox.askyesno("", "Необходимо ввести данные для подключения, уверен, что ты нас покидаешь?"):
             self.destroy()
 
     def entries(self):
@@ -53,4 +56,3 @@ class UserForm(tk.Toplevel):
         self.grab_set()
         self.wait_window()
         return self.username.get(), self.password.get(), self.host.get(), self.db_name.get()
-
