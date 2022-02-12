@@ -8,7 +8,8 @@ from SQLite import SQLite
 from loguru import logger
 from window_user_data_postrge import UserForm
 
-logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
+logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip') # This is logger(Use: Loguru)
+print()
 
 
 class Window(tk.Tk):
