@@ -42,7 +42,7 @@ class SQLite(DBWorker):
             return self.__cur.fetchall()
 
     @property  # Getter and Setter are used to establish a connection from the database and the cursor if the user
-    # changes or selects the database for the first time.
+    # changes database or selects it for the first time.
     def con(self):
         return self.__con
 

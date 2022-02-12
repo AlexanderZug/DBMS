@@ -69,7 +69,7 @@ class Window(tk.Tk):
                                                                                                   relheight=1)
 
     @logger.catch
-    def table_show(self):  # The method takes all tables' names from BD.
+    def table_show(self):  # The method takes all tables' names from DB.
         db_list = self.db.get_all_tables()
         self.db_tables = ttk.Combobox(self.frame_db_tables_content, values=db_list)
         self.db_tables.place(relx=0, rely=0, relwidth=0.2, relheight=0.1)
@@ -86,7 +86,7 @@ class Window(tk.Tk):
         tk.Button(self.frame_tables_sql_but, text='Очищение...',
                   fg='black', bg='white',
                   command=lambda: self.txt_sql_req.delete('1.0', tk.END)).place(relx=0.35, rely=0.01)
-        #  It accepts two versions pf sql requests - select request (method) and other requests (get text).
+        #  It accepts two versions of sql requests - select request (method) and other requests (get text).
         tk.Button(self.frame_tables_sql_but, text='Вводи, не страшись!', fg='black', bg='white',
                   command=lambda: [self.db.get_sql_requests(self.txt_sql_req.get('1.0', tk.END).strip()),
                                    self.sql_requests_for_select()]).place(relx=0.46, rely=0.01)
