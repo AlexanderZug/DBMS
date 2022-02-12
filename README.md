@@ -22,4 +22,4 @@ cd code_DBMS
 python 3 window_dec.py
 ```
 
-> Technologies used in the project: Python3, psycopg2-binary, SQLite.
+> Technologies used in the project: Python3, Tkinter, psycopg2-binary, SQLite.
