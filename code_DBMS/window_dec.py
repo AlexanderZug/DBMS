@@ -204,8 +204,11 @@ class Window(tk.Tk):
     @logger.catch
     def __new_postgre_config(self):
         if isinstance(self.db, SQLite):
-            self.db = DBPostgreSQL()
-            self.db.con = UserForm(self).open()
+            try:
+                self.db = DBPostgreSQL()
+                self.db.con = UserForm(self).open()
+            except AttributeError:
+                pass
             self.table_show()
 
 

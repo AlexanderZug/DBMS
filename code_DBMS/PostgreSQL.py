@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2 import errors
 from abstract_method import DBWorker
+from tkinter import messagebox as mbox
 from decorators import sql_error_handler_postgres, postgres_init_massages
 from loguru import logger
 
@@ -16,7 +17,10 @@ class DBPostgreSQL(DBWorker):
 
     @logger.catch
     def get_all_tables(self):
-        self.__cur.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema='public'""")
+        try:
+            self.__cur.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema='public'""")
+        except AttributeError:
+            return []
         return self.__cur.fetchall()
 
     @logger.catch
@@ -51,7 +55,10 @@ class DBPostgreSQL(DBWorker):
 
     @con.setter
     def con(self, user_data: tuple):
-        self.__con = psycopg2.connect(database=user_data[3], user=user_data[0], password=user_data[1],
-                                      host=user_data[2])
-        self.__con.autocommit = True
-        self.__cur = self.__con.cursor()
+        try:
+            self.__con = psycopg2.connect(database=user_data[3], user=user_data[0], password=user_data[1],
+                                          host=user_data[2])
+            self.__con.autocommit = True
+            self.__cur = self.__con.cursor()
+        except psycopg2.OperationalError as ex:
+            mbox.showerror('', f'Произошла ошибка: {ex}')

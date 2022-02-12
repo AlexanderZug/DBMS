@@ -1,11 +1,13 @@
 
 import tkinter as tk
+from tkinter import messagebox as mbox
 
 
 class UserForm(tk.Toplevel):
     def __init__(self, parent):
         super().__init__(parent)
         self.title('Введите данные')
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.center_window()
         self.username = tk.StringVar()
         self.password = tk.StringVar()
@@ -18,6 +20,10 @@ class UserForm(tk.Toplevel):
         s_width, s_height = self.winfo_screenwidth(), self.winfo_screenheight()
         x_screen, y_screen = (s_width - width) / 2, (s_height - height) / 2
         self.geometry(f'{width}x{height}+{int(x_screen)}+{int(y_screen)}')
+
+    def on_closing(self):
+        if mbox.showerror("Quit", "Необходимо ввести данные для подключения"):
+            pass
 
     def entries(self):
         tk.Label(self, text='user_name', width=10, height=1).grid(row=1, column=0)
