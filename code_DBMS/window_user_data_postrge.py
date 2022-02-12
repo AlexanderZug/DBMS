@@ -22,8 +22,8 @@ class UserForm(tk.Toplevel):
         self.geometry(f'{width}x{height}+{int(x_screen)}+{int(y_screen)}')
 
     def on_closing(self):
-        if mbox.showerror("Quit", "Необходимо ввести данные для подключения"):
-            pass
+        if mbox.askyesno("Quit", "Необходимо ввести данные для подключения, уверен, что ты нас покидаешь?"):
+            self.destroy()
 
     def entries(self):
         tk.Label(self, text='user_name', width=10, height=1).grid(row=1, column=0)
@@ -49,12 +49,8 @@ class UserForm(tk.Toplevel):
         btn = tk.Button(self, text="Submit", command=self.destroy)
         btn.grid(row=5, columnspan=2)
 
-    def open(self):
+    def open_user_data_postgres_window(self):
         self.grab_set()
         self.wait_window()
-        username = self.username.get()
-        password = self.password.get()
-        host = self.host.get()
-        db_name = self.db_name.get()
-        return username, password, host, db_name
+        return self.username.get(), self.password.get(), self.host.get(), self.db_name.get()
 

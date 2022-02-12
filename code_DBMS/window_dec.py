@@ -6,8 +6,7 @@ from tkinter import ttk
 from PostgreSQL import DBPostgreSQL
 from SQLite import SQLite
 from loguru import logger
-
-from code_DBMS.window_user_data_postrge import UserForm
+from window_user_data_postrge import UserForm
 
 logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
 
@@ -42,11 +41,11 @@ class Window(tk.Tk):
         self.table_show()
         self.table_columns('', 0)
         self.sql_requests()
-        self.sql_inter_del_but()
+        self.btns_for_sql_requests()
         self.sql_requests_for_select()
         self.sql_commands_grid()
         self.sql_commands_place()
-        self.close_save_but()
+        self.btns_for_close_db_choose()
 
     def center_window(self):
         width, height = 1300, 700
@@ -76,7 +75,7 @@ class Window(tk.Tk):
         self.txt_sql_req.config(insertbackground='black')
         self.txt_sql_req.focus_set()
 
-    def sql_inter_del_but(self):
+    def btns_for_sql_requests(self):
         tk.Button(self.frame_tables_sql_but, text='Выбрать таблицу', fg='black', bg='white',
                   command=lambda: self.table_for_db_cont([])).place(relx=0.03, rely=0.01)
         tk.Button(self.frame_tables_sql_but, text='Очищение...',
@@ -128,7 +127,7 @@ class Window(tk.Tk):
         column = 0
         commands_lst = ['SELECT', 'UPDATE', 'WHERE', 'GROUP BY', 'INSERT', 'ALTER', 'CREATE',
                         'ORDER BY', 'HAVING', 'DROP', 'INTO', 'VALUES', 'TABLE', 'FROM', 'JOIN',
-                        'DELETE', ]
+                        'DELETE',]
         for comm_name in commands_lst:
             buts.append(tk.Button(self.frame_sql_commands, ))
             buts[-1].grid(row=row, column=column, padx=0, pady=0)
@@ -149,7 +148,7 @@ class Window(tk.Tk):
 
     def sql_commands_place(self):
         buts_symb = []
-        symbols_lst = ['AND', 'OR', '*', ';', "''"]
+        symbols_lst = ['AND', 'OR', '*', ';', "''",]
         relx = 0.05
         for symb in symbols_lst:
             buts_symb.append(tk.Button(self.frame_sql_commands, text=symb, ))
@@ -172,7 +171,7 @@ class Window(tk.Tk):
                                                                                                relwidth=0.3,
                                                                                                relheight=0.08)
 
-    def close_save_but(self):
+    def btns_for_close_db_choose(self):
         tk.Button(self.frame_close_but, text="Уходя уходи", command=self.pop_up_close).place(relx=0.85, rely=0.03)
         tk.Button(self.frame_close_but, text='Выбрать локальную БД (SQLite)', fg='black', bg='white',
                   command=self.__new_db_config).place(relx=0.04, rely=0.01)
@@ -205,10 +204,10 @@ class Window(tk.Tk):
     def __new_postgre_config(self):
         if isinstance(self.db, SQLite):
             self.db = DBPostgreSQL()
-            self.db.con = UserForm(self).open()
+            self.db.con = UserForm(self).open_user_data_postgres_window()
             self.table_show()
         elif isinstance(self.db, DBPostgreSQL) and hasattr != (self.db, 'con'):
-            self.db.con = UserForm(self).open()
+            self.db.con = UserForm(self).open_user_data_postgres_window()
             self.table_show()
 
 
