@@ -188,7 +188,7 @@ class Window(tk.Tk):
         tk.Button(self.frame_close_but, text="Уходя уходи", command=self.pop_up_close).place(relx=0.85, rely=0.03)
         tk.Button(self.frame_close_but, text='Выбрать локальную БД (SQLite)', fg='black', bg='white',
                   command=self.__new_db_config).place(relx=0.04, rely=0.01)
-        tk.Button(self.frame_close_but, text='Подключится к удаленной БД (PostgreSQL)', fg='black',
+        tk.Button(self.frame_close_but, text='Подключиться к удаленной БД (PostgreSQL)', fg='black',
                   bg='white', command=self.__new_postgre_config).place(relx=0.25, rely=0.01)
 
     def y_scroll(self):
