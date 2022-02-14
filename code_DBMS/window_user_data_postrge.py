@@ -1,5 +1,6 @@
 
 import tkinter as tk
+
 from tkinter import messagebox as mbox
 
 
@@ -7,6 +8,7 @@ class UserForm(tk.Toplevel):
     """
     The class creates a new window to get user data for Postgres-connection.
     """
+
     def __init__(self, parent):
         super().__init__(parent)
         self.title('Введите данные')

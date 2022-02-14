@@ -1,11 +1,18 @@
 import sqlite3
-from abstract_method import DBWorker
+
+from abstract_strategy import DBWorker
 from decorators import sql_error_handler
 from loguru import logger
-logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
+
+logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}',
+           rotation='300 MB', compression='zip')
 
 
 class SQLite(DBWorker):
+    """
+    The class working with local database using SQLite
+    """
+
     def __init__(self):
         self.__con = sqlite3.connect('')
         self.__cur = self.__con.cursor()
@@ -41,8 +48,9 @@ class SQLite(DBWorker):
         else:
             return self.__cur.fetchall()
 
-    @property  # Getter and Setter are used to establish a connection from the database and the cursor if the user
+    # Getter and Setter are used to establish a connection from the database and the cursor if the user
     # changes database or selects it for the first time.
+    @property
     def con(self):
         return self.__con
 

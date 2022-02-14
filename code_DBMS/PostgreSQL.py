@@ -1,14 +1,20 @@
 import psycopg2
+
 from psycopg2 import errors
-from abstract_method import DBWorker
+from abstract_strategy import DBWorker
 from tkinter import messagebox as mbox
 from decorators import sql_error_handler_postgres, postgres_init_massages
 from loguru import logger
 
-logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
+logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}',
+           rotation='300 MB', compression='zip')
 
 
 class PostgreSQL(DBWorker):
+    """
+    The class working with remote database using PostgreSQL
+    """
+
     @postgres_init_massages
     def __init__(self):
         self.__con = psycopg2.connect(database=None, user=None, password=None, host=None)

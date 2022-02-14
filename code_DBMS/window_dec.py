@@ -1,5 +1,6 @@
 import tkinter as tk
 import webbrowser as wb
+
 from tkinter import messagebox as mbox
 from tkinter import filedialog as fd
 from tkinter import ttk
@@ -8,7 +9,8 @@ from SQLite import SQLite
 from loguru import logger
 from window_user_data_postrge import UserForm
 
-logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}', rotation='300 MB', compression='zip')
+logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}',
+           rotation='300 MB', compression='zip')
 
 
 class Window(tk.Tk):
@@ -147,7 +149,8 @@ class Window(tk.Tk):
                 column = 0
             for i in range(len(buts)):
                 buts[i]['command'] = lambda i=i: \
-                    self.txt_sql_req.insert(tk.END, commands_lst[i].ljust(6, " "))
+                    self.txt_sql_req.insert(tk.END, commands_lst[i].ljust(6, " "))  # Adding gaps depending on the
+                # word length.
                 if len(commands_lst[i]) == 6:
                     buts[i]['command'] = lambda i=i: \
                         self.txt_sql_req.insert(tk.END, commands_lst[i].ljust(8, " "))
@@ -167,7 +170,8 @@ class Window(tk.Tk):
             for i in range(len(buts_symb)):
                 if len(symbols_lst[i]) > 2:
                     buts_symb[i]['command'] = lambda i=i: \
-                        self.txt_sql_req.insert(tk.END, symbols_lst[i].ljust(4, " "))
+                        self.txt_sql_req.insert(tk.END, symbols_lst[i].ljust(4, " "))  # Adding gaps depending on the
+                # word length.
                 else:
                     buts_symb[i]['command'] = lambda i=i: \
                         self.txt_sql_req.insert(tk.END, symbols_lst[i].ljust(3, " "))
@@ -218,10 +222,11 @@ class Window(tk.Tk):
             # This check is necessary that in the
             # case of incorrect data or closing the window without entering data it is possible to call the
             # window again (since otherwise the strategy remains the same and the window is not called).
-        elif isinstance(self.db, PostgreSQL) and hasattr != (self.db, 'con'):
+        elif isinstance(self.db, PostgreSQL) and not hasattr(self.db, 'con'):
             self.db.con = UserForm(self).open_user_data_postgres_window()
             self.table_show()
 
 
-window = Window()
-window.mainloop()
+if __name__ == '__main__':
+    window = Window()
+    window.mainloop()

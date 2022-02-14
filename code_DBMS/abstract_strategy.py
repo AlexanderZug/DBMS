@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Union
 
 
 class DBWorker(ABC):
@@ -28,5 +29,5 @@ class DBWorker(ABC):
         pass
 
     @abstractmethod
-    def con(self, user_data: tuple|str):
+    def con(self, user_data: Union[tuple, str]):
         pass
