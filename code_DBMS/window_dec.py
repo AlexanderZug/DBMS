@@ -6,11 +6,8 @@ from tkinter import filedialog as fd
 from tkinter import ttk
 from PostgreSQL import PostgreSQL
 from SQLite import SQLite
-from loguru import logger
 from window_user_data_postrge import UserForm
-
-logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}',
-           rotation='300 MB', compression='zip')
+from logger_config import logger
 
 
 class Window(tk.Tk):

@@ -2,10 +2,7 @@ import sqlite3
 
 from abstract_strategy import DBWorker
 from decorators import sql_error_handler
-from loguru import logger
-
-logger.add('logs/debug.log', level='DEBUG', format='{time} {level} {message}',
-           rotation='300 MB', compression='zip')
+from logger_config import logger
 
 
 class SQLite(DBWorker):
