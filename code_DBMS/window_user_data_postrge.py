@@ -18,7 +18,7 @@ class UserForm(tk.Toplevel):
         self.password = tk.StringVar()
         self.host = tk.StringVar()
         self.db_name = tk.StringVar()
-        self.lables()
+        self.labels()
         self.entries()
 
     def center_window(self):
@@ -31,7 +31,7 @@ class UserForm(tk.Toplevel):
         if mbox.askyesno("", "Необходимо ввести данные для подключения, уверен, что ты нас покидаешь?"):
             self.destroy()
 
-    def lables(self):
+    def labels(self):
         lbs = []
         row = 1
         column = 0
