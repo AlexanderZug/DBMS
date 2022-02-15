@@ -18,6 +18,7 @@ class UserForm(tk.Toplevel):
         self.password = tk.StringVar()
         self.host = tk.StringVar()
         self.db_name = tk.StringVar()
+        self.lables()
         self.entries()
 
     def center_window(self):
@@ -30,7 +31,7 @@ class UserForm(tk.Toplevel):
         if mbox.askyesno("", "Необходимо ввести данные для подключения, уверен, что ты нас покидаешь?"):
             self.destroy()
 
-    def entries(self):
+    def lables(self):
         lbs = []
         row = 1
         column = 0
@@ -40,6 +41,7 @@ class UserForm(tk.Toplevel):
             lbs[-1].grid(row=row, column=column)
             row += 1
 
+    def entries(self):
         entries = []
         row = 1
         column = 1
@@ -50,7 +52,6 @@ class UserForm(tk.Toplevel):
             row += 1
             entries[-1].config(insertbackground='black')
         entries[0].focus_set()
-
         tk.Button(self, text="Ввести данные", command=self.destroy).grid(row=5, columnspan=2)
 
     def open_user_data_postgres_window(self):
