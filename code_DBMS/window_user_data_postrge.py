@@ -31,28 +31,27 @@ class UserForm(tk.Toplevel):
             self.destroy()
 
     def entries(self):
-        tk.Label(self, text='user_name', width=10, height=1).grid(row=1, column=0)
-        password_entry = tk.Entry(self, textvariable=self.username, bg='white', fg='black')
-        password_entry.grid(row=1, column=1)
-        password_entry.config(insertbackground='black')
+        lbs = []
+        row = 1
+        column = 0
+        lbs_names_lst = ['user_name', 'password', 'host_name', 'db_name', ]
+        for lbl_name in lbs_names_lst:
+            lbs.append(tk.Label(self, text=lbl_name, width=10, height=1))
+            lbs[-1].grid(row=row, column=column)
+            row += 1
 
-        tk.Label(self, text='password', width=10, height=1).grid(row=2, column=0)
-        password_entry = tk.Entry(self, textvariable=self.password, bg='white', fg='black')
-        password_entry.grid(row=2, column=1)
-        password_entry.config(insertbackground='black')
+        entries = []
+        row = 1
+        column = 1
+        entries_list = [self.username, self.password, self.host, self.db_name]
+        for entry in entries_list:
+            entries.append(tk.Entry(self, textvariable=entry, bg='white', fg='black'))
+            entries[-1].grid(row=row, column=column)
+            row += 1
+            entries[-1].config(insertbackground='black')
+        entries[0].focus_set()
 
-        tk.Label(self, text='host_name', width=10, height=1).grid(row=3, column=0)
-        user_entry = tk.Entry(self, textvariable=self.host, bg='white', fg='black')
-        user_entry.grid(row=3, column=1)
-        user_entry.config(insertbackground='black')
-
-        tk.Label(self, text='db_name', width=10, height=1).grid(row=4, column=0)
-        user_entry = tk.Entry(self, textvariable=self.db_name, bg='white', fg='black')
-        user_entry.grid(row=4, column=1)
-        user_entry.config(insertbackground='black')
-
-        btn = tk.Button(self, text="Submit", command=self.destroy)
-        btn.grid(row=5, columnspan=2)
+        tk.Button(self, text="Ввести данные", command=self.destroy).grid(row=5, columnspan=2)
 
     def open_user_data_postgres_window(self):
         self.grab_set()
