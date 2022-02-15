@@ -7,7 +7,7 @@ from tkinter import ttk
 from PostgreSQL import PostgreSQL
 from SQLite import SQLite
 from window_user_data_postrge import UserForm
-from logger_config import logger
+from code_DBMS.logger_config import logger
 
 
 class Window(tk.Tk):

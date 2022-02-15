@@ -2,7 +2,7 @@ import sqlite3
 
 from abstract_strategy import DBWorker
 from decorators import sql_error_handler
-from logger_config import logger
+from code_DBMS.logger_config import logger
 
 
 class SQLite(DBWorker):

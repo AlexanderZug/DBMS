@@ -4,7 +4,7 @@ from psycopg2 import errors
 from abstract_strategy import DBWorker
 from tkinter import messagebox as mbox
 from decorators import sql_error_handler_postgres, postgres_init_massages
-from logger_config import logger
+from code_DBMS.logger_config import logger
 
 
 class PostgreSQL(DBWorker):
