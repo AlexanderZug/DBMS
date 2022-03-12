@@ -11,6 +11,11 @@ Clone the repository:
 git clone https://github.com/AlexanderZug/DBMS.git
 ```
 
+Go to folder:
+```
+cd DBMS
+```
+
 Install requirements:
 ```
 pip3 install -r requirements.txt
