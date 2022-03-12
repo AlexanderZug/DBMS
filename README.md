@@ -1,5 +1,5 @@
 # DBMS
-The program for managing databases SQLite and PostgreSQL. It contains SQL assistant (the code is written using the Pattern Strategy).
+The program for managing databases SQLite and PostgreSQL. It contains SQL assistant.
 
 ## Deploy locally:
 
