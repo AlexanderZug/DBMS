@@ -1,5 +1,5 @@
 # DBMS
-The program for managing databases SQLite and PostgreSQL. It contains SQL assistant (the code is written using the Pattern Strategy).
+The program for managing databases SQLite and PostgreSQL. It contains SQL assistant.
 
 ## Deploy locally:
 
@@ -9,6 +9,11 @@ The program for managing databases SQLite and PostgreSQL. It contains SQL assist
 Clone the repository:
 ```
 git clone https://github.com/AlexanderZug/DBMS.git
+```
+
+Go to folder:
+```
+cd DBMS
 ```
 
 Install requirements:
