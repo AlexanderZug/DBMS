@@ -15,12 +15,12 @@ class SQLite(DBWorker):
         self.__cur = self.__con.cursor()
 
     @logger.catch
-    def get_all_tables(self):
+    def get_all_tables(self) -> list:
         self.__cur.execute("""SELECT name FROM sqlite_master WHERE type='table';""")
         return self.__cur.fetchall()
 
     @logger.catch
-    def get_tables_header(self, table: str):
+    def get_tables_header(self, table: str) -> list:
         self.__cur.execute("PRAGMA table_info('%s');" % table)
         return self.__cur.fetchall()
 
@@ -32,12 +32,12 @@ class SQLite(DBWorker):
 
     @logger.catch
     @sql_error_handler
-    def get_sql_select_requests(self, select_request: str):
+    def get_sql_select_requests(self, select_request: str) -> list:
         self.__cur.execute("""%s""" % select_request)
         return self.__cur.fetchall()
 
     @logger.catch
-    def send_table_content_to_user(self, table: str):
+    def send_table_content_to_user(self, table: str) -> list:
         try:
             self.__cur.execute("""SELECT * FROM '%s'""" % table)
         except sqlite3.OperationalError:

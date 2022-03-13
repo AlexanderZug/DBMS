@@ -53,7 +53,7 @@ class UserForm(tk.Toplevel):
         entries[0].focus_set()
         tk.Button(self, text="Ввести данные", command=self.destroy).grid(row=5, columnspan=2)
 
-    def open_user_data_postgres_window(self):
+    def open_user_data_postgres_window(self) -> tuple:
         self.grab_set()
         self.wait_window()
         return self.username.get(), self.password.get(), self.host.get(), self.db_name.get()
