@@ -1,6 +1,10 @@
 # DBMS
 The program for managing databases SQLite and PostgreSQL. It contains SQL assistant.
 
+![](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
+
 ## Deploy locally:
 
 > Install Python(If it's not installed)<br>
