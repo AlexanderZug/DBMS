@@ -28,7 +28,7 @@ pip3 install -r requirements.txt
 Start programm:
 ```
 cd code_DBMS
-python 3 window_dec.py
+python3 window_dec.py
 ```
 
 > Technologies used in the project: Python3, Tkinter, psycopg2-binary, SQLite.
