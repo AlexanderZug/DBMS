@@ -1,8 +1,8 @@
 import sqlite3
 
 from abstract_strategy import DBWorker
-from decorators import sql_error_handler
 from code_DBMS.logger_config import logger
+from decorators import sql_error_handler
 
 
 class SQLite(DBWorker):
@@ -16,7 +16,9 @@ class SQLite(DBWorker):
 
     @logger.catch
     def get_all_tables(self) -> list:
-        self.__cur.execute("""SELECT name FROM sqlite_master WHERE type='table';""")
+        self.__cur.execute(
+            """SELECT name FROM sqlite_master WHERE type='table';"""
+        )
         return self.__cur.fetchall()
 
     @logger.catch

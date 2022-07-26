@@ -3,7 +3,6 @@ from typing import Union
 
 
 class DBWorker(ABC):
-
     @abstractmethod
     def get_all_tables(self):
         pass

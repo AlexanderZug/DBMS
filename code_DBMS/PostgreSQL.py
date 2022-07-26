@@ -1,10 +1,11 @@
-import psycopg2
-
-from psycopg2 import errors
-from abstract_strategy import DBWorker
 from tkinter import messagebox as mbox
-from decorators import sql_error_handler_postgres, postgres_init_massages
+
+import psycopg2
+from psycopg2 import errors
+
+from abstract_strategy import DBWorker
 from code_DBMS.logger_config import logger
+from decorators import postgres_init_massages, sql_error_handler_postgres
 
 
 class PostgreSQL(DBWorker):
@@ -14,14 +15,18 @@ class PostgreSQL(DBWorker):
 
     @postgres_init_massages
     def __init__(self):
-        self.__con = psycopg2.connect(database=None, user=None, password=None, host=None)
+        self.__con = psycopg2.connect(
+            database=None, user=None, password=None, host=None
+        )
         self.__con.autocommit = True
         self.__cur = self.__con.cursor()
 
     @logger.catch
     def get_all_tables(self) -> list:
         try:
-            self.__cur.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema='public'""")
+            self.__cur.execute(
+                """SELECT table_name FROM information_schema.tables WHERE table_schema='public'"""
+            )
         except AttributeError:
             return []
         return self.__cur.fetchall()
@@ -59,8 +64,12 @@ class PostgreSQL(DBWorker):
     @con.setter
     def con(self, user_data: tuple):
         try:
-            self.__con = psycopg2.connect(database=user_data[3], user=user_data[0], password=user_data[1],
-                                          host=user_data[2])
+            self.__con = psycopg2.connect(
+                database=user_data[3],
+                user=user_data[0],
+                password=user_data[1],
+                host=user_data[2],
+            )
             self.__con.autocommit = True
             self.__cur = self.__con.cursor()
         except psycopg2.OperationalError as ex:
